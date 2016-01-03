@@ -1,6 +1,7 @@
 %{
 	#include <stdio.h>
 	
+	
 	extern int yylineno;
 	
 	void yyerror (char const *s) {
@@ -130,8 +131,7 @@ e1:
 	;
 	
 r:	
-	/* empty */
-	| u r1
+	u r1
 	;
 
 r1:
