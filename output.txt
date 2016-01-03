@@ -1,0 +1,15 @@
+<VAR,var> // token Palabra reservada
+<CHARS,chars> // token Palabra reservada
+<ID,s> // token Identificador
+<ID,s> // token Identificador
+<OPAS,> // token Operator asignacion
+<CADENA,"mon texte"> // token Cadena
+<FUNCTION,function> // token Palabra reservada
+<ID,maFonction> // token Identificador
+<ABRPAR,> // token Abrir paréntesis
+<CERPAR,> // token Cerrar paréntesis
+<ABRLLAVE,> // token Abrir llave
+<WRITE,write> // token Palabra reservada
+<ABRPAR,> // token Abrir paréntesis
+<CADENA,"chaine1"> // token Cadena
+<COMA,> // token Comma
