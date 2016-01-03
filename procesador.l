@@ -10,19 +10,21 @@
 
 ID [A-Za-z][A-Za-z0-9_]*
 ENTERO [0-9]+
-CADENA "\""(.)*"\""
+CADENA \"(\\.|[^"])*\"
 
 %x C_COMMENT
 
 %%
 
-"/*"            { ECHO; BEGIN(C_COMMENT); }
-<C_COMMENT>"*/" { ECHO; BEGIN(INITIAL); }
-<C_COMMENT>.    { ECHO;}
+
+"/*"            {ECHO; BEGIN(C_COMMENT); }
+<C_COMMENT>"*/" {ECHO; BEGIN(INITIAL); }
+<C_COMMENT>.    {ECHO; }
 
 [[:blank:]]+ {ECHO;/* Do nothing */}
 
-"\n" {ECHO; /* Do nothing */}
+"\n" {ECHO;/* Do nothing */}
+
 
 "\(" {ECHO;writeToken("ABRPAR", "", "Abrir paréntesis");return(ABRPAR);}
 
