@@ -1,13 +1,10 @@
 %{
 	#include <stdio.h>
 	
-	#define KRED  "\x1B[31m" // RED COLOR CODE
-	#define RESET "\033[0m" // RESET COLOR CODE
-	
 	extern int yylineno;
 	
 	void yyerror (char const *s) {
-	   fprintf (stderr, KRED " (Line:%d) %s\n" RESET, yylineno, s);
+	   fprintf (stderr,  " (Line:%d) %s\n" , yylineno, s);
 	}
 %}
 
@@ -33,9 +30,14 @@ p:
 
 b:
 	VAR t ID
-	| IF ABRPAR e CERPAR s
+	| IF ABRPAR e CERPAR b1
 	| SWITCH ABRPAR ID CERPAR ABRLLAVE g CERLLAVE
 	| s
+	;
+	
+b1:
+	s
+	| ABRLLAVE s CERLLAVE
 	;
 
 t:
@@ -59,10 +61,10 @@ k:
 	;
 
 s:
-	ID s2
-	| RETURN e
+	RETURN e
 	| WRITE ABRPAR e CERPAR
 	| PROMPT ABRPAR ID CERPAR
+	| ID s2
 	;
 
 s2:
@@ -72,12 +74,25 @@ s2:
 	;
 
 g:
-	CASE e DOBLEPUNTOS s j i
+	CASE e DOBLEPUNTOS g1
+	| DEFAULT DOBLEPUNTOS g2
 	;
+	
+g1:
+	i
+	| s j i
+	| IF ABRPAR e CERPAR s
+	;	
+
+g2:
+	/* empty */
+	| s j
+	| IF ABRPAR e CERPAR s j
+	;		
 
 j:
 	/* empty */
-	| BREAK
+	| PUNTOCOMA BREAK
 	;
 
 i: 
@@ -106,27 +121,43 @@ q:
 	;
 
 e:
-	OPRELIGUAL u
-	| u
+	r e1
+	;
+	
+e1:
+	/* empty */
+	| OPRELIGUAL r e1
+	;
+	
+r:	
+	/* empty */
+	| u r1
+	;
+
+r1:
+	/* empty */
+	| OPARSUMA u r1
 	;
 
 u:
-	OPARSUMA v
-	| v
+	v u1
 	;
 
+u1:
+	/* empty */
+	| OPLOGNEG v u1
+	;
+	
 v:
-	ID v2
+	ID v1
 	| ABRPAR e CERPAR
 	| ENTERO
 	| CADENA
 	| OPINCR ID
-	| OPLOGNEG e
 	;
 
-v2:
+v1:
 	/* empty */
-	| OPINCR
 	| ABRPAR l CERPAR
 	;
 
