@@ -1,0 +1,95 @@
+//// JAVASCRIPT-PL
+
+Terminales = { default puntoComa abrPar cerPar abrLlave cerLlave coma id entero cadena int chars bool opArSuma opRelIgual opLogNeg opIncr opAs opAsSuma var function return write prompt if switch case doblePuntos break }
+
+NoTerminales = { P B B1 F G G1 G2 I J T S S2 C H A K L Q E E1 U U1 V V1 R R1 }
+
+Axioma = P
+
+Producciones = {
+
+P -> B P
+P -> F P	
+P -> lambda
+
+B -> var T id						
+B -> if abrPar E cerPar B1 				
+B -> switch abrPar id cerPar abrLlave G cerLlave
+B -> S
+
+B1 -> B
+B1 -> abrLlave C cerLlave
+
+F -> function H id abrPar A cerPar abrLlave C cerLlave					
+
+T -> int
+T -> bool
+T -> chars
+
+A -> T id K	
+A -> lambda
+
+K -> coma T id K 
+K -> lambda
+
+S -> id S2 		
+S -> return E
+S -> write abrPar E cerPar
+S -> prompt abrPar id cerPar
+
+S2 -> opAs E	
+S2 -> abrPar L cerPar	
+S2 -> opAsSuma E	
+
+G -> case E doblePuntos G1
+G -> default doblePuntos G2
+
+G1 -> B J I 
+G1 -> I
+
+G2 -> B 
+G2 -> lambda
+
+J -> puntoComa break
+J -> lambda
+
+I -> G
+I -> lambda
+
+C -> B C 	
+C -> lambda
+
+H -> T		
+H -> lambda
+
+L -> E Q	
+L -> lambda
+
+Q -> coma E Q	
+Q -> lambda	
+
+E -> R E1
+
+E1 -> opRelIgual R E1
+E1 -> lambda
+
+R -> U R1
+
+R1 -> opArSuma U R1
+R1 -> lambda
+
+U -> V U1
+
+U1 -> opLogNeg V U1
+U1 -> lambda
+
+V -> id V1
+V -> abrPar E cerPar
+V -> entero
+V -> cadena
+V -> opIncr id
+
+V1 -> lambda
+V1 -> abrPar L cerPar
+
+}
