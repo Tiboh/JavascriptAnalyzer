@@ -4,6 +4,9 @@
 	#include <stdio.h>
 	#include "y.tab.h"
 	
+	extern const char* RED_TERM;
+	extern const char* BLACK_TERM;
+	
 	extern FILE *outFile_p;
 	extern void writeToken(const char *codigo, const char *attributo, const char* commentario);
 %}
@@ -81,5 +84,11 @@ bool {ECHO;writeToken("BOOL", yytext, "Palabra reservada");return(BOOL);}
 "break" {ECHO;writeToken("BREAK", yytext, "Palabra reservada");return(BREAK);}
 
 {ID} {ECHO;writeToken("ID", yytext, "Identificador");return(ID);}
+
+[ \t\n]+	{ECHO;/* ignorar blancos, tabuladores y saltos de línea */}
+
+. {
+  fprintf(stdout, " %sERROR LÉXICO: Carácter no válido: %s%s\n", RED_TERM, yytext, BLACK_TERM);
+}
 
 %%
