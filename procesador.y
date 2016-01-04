@@ -37,10 +37,10 @@ b:
 	;
 	
 b1:
-	s
-	| ABRLLAVE s CERLLAVE
+	b
+	| ABRLLAVE c CERLLAVE
 	;
-
+		
 t:
 	INT
 	| BOOL
@@ -82,14 +82,12 @@ g:
 	
 g1:
 	i
-	| s j i
-	| b j i
+	| b j i 
 	;	
 
 g2:
 	/* empty */
-	| s j
-	| b
+	| b 
 	;		
 
 j:

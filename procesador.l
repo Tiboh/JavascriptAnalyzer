@@ -16,6 +16,7 @@ CADENA \"(\\.|[^"])*\"
 
 %%
 
+
 "/*"            {ECHO; BEGIN(C_COMMENT); }
 <C_COMMENT>"*/" {ECHO; BEGIN(INITIAL); }
 <C_COMMENT>.    {ECHO; }
@@ -23,6 +24,7 @@ CADENA \"(\\.|[^"])*\"
 [[:blank:]]+ {ECHO;/* Do nothing */}
 
 "\n" {ECHO;/* Do nothing */}
+
 
 "\(" {ECHO;writeToken("ABRPAR", "", "Abrir paréntesis");return(ABRPAR);}
 
