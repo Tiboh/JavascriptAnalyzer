@@ -7,7 +7,6 @@
 	extern int yylineno;
 	
 	void yyerror (char const *s) {
-	   fprintf (stderr,  " (Line:%d) %s\n" , yylineno, s);
 	   fprintf (stderr,  " %sERROR SINTÁCTICO: (Line:%d) %s%s\n" , RED_TERM, yylineno, s, BLACK_TERM);
 	}
 %}

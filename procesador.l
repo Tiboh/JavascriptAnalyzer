@@ -24,11 +24,6 @@ CADENA \"(\\.|[^"])*\"
 <C_COMMENT>"*/" {ECHO; BEGIN(INITIAL); }
 <C_COMMENT>.    {ECHO; }
 
-[[:blank:]]+ {ECHO;/* Do nothing */}
-
-"\n" {ECHO;/* Do nothing */}
-
-
 "\(" {ECHO;writeToken("ABRPAR", "", "Abrir paréntesis");return(ABRPAR);}
 
 "\)" {ECHO;writeToken("CERPAR", "", "Cerrar paréntesis");return(CERPAR);}
