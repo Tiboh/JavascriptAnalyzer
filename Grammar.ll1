@@ -34,7 +34,7 @@ K -> lambda
 
 S -> id S2 		
 S -> return E
-S -> write abrPar E cerPar
+S -> write abrPar L cerPar
 S -> prompt abrPar id cerPar
 
 S2 -> opAs E	

@@ -62,9 +62,8 @@ k:
 	;
 
 s:
-	/* empty */
-	| RETURN e
-	| WRITE ABRPAR e CERPAR
+	RETURN e
+	| WRITE ABRPAR l CERPAR
 	| PROMPT ABRPAR ID CERPAR
 	| ID s2
 	;
