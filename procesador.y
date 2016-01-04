@@ -11,15 +11,16 @@
 
 %token ID
 %token ABRPAR CERPAR ABRLLAVE CERLLAVE
-%token COMA DOBLEPUNTOS PUNTOCOMA
+%token COMA DOBLEPUNTOS
 %token ENTERO CADENA INT CHARS BOOL
-%token OPRELIGUAL OPLOGNEG OPINCR OPARSUMA OPAS OPASSUMA
+%token OPRELIGUAL OPLOGCON OPINCR OPARSUMA OPAS OPASSUMA
 %token VAR FUNCTION RETURN WRITE PROMPT IF SWITCH CASE BREAK DEFAULT
 
 %right OPASSUMA OPAS
+%left OPLOGCON
 %left OPRELIGUAL
 %left OPARSUMA
-%right OPINCR OPLOGNEG
+%right OPINCR 
 
 %% 
 
@@ -91,7 +92,7 @@ g2:
 
 j:
 	/* empty */
-	| PUNTOCOMA BREAK
+	| BREAK
 	;
 
 i: 
@@ -125,7 +126,7 @@ e:
 	
 e1:
 	/* empty */
-	| OPRELIGUAL r e1
+	| OPLOGCON r e1
 	;
 	
 r:	
@@ -134,7 +135,7 @@ r:
 
 r1:
 	/* empty */
-	| OPARSUMA u r1
+	| OPRELIGUAL u r1
 	;
 
 u:
@@ -143,7 +144,7 @@ u:
 
 u1:
 	/* empty */
-	| OPLOGNEG v u1
+	| OPARSUMA v u1
 	;
 	
 v:

@@ -1,6 +1,6 @@
 //// JAVASCRIPT-PL
 
-Terminales = { default puntoComa abrPar cerPar abrLlave cerLlave coma id entero cadena int chars bool opArSuma opRelIgual opLogNeg opIncr opAs opAsSuma var function return write prompt if switch case doblePuntos break }
+Terminales = { default abrPar cerPar abrLlave cerLlave coma id entero cadena int chars bool opArSuma opRelIgual opLogCon opIncr opAs opAsSuma var function return write prompt if switch case doblePuntos break }
 
 NoTerminales = { P B B1 F G G1 G2 I J T S S2 C H A K L Q E E1 U U1 V V1 R R1 }
 
@@ -50,7 +50,7 @@ G1 -> I
 G2 -> B 
 G2 -> lambda
 
-J -> puntoComa break
+J -> break
 J -> lambda
 
 I -> G
@@ -70,17 +70,17 @@ Q -> lambda
 
 E -> R E1
 
-E1 -> opRelIgual R E1
+E1 -> opLogCon R E1
 E1 -> lambda
 
 R -> U R1
 
-R1 -> opArSuma U R1
+R1 -> opRelIgual U R1
 R1 -> lambda
 
 U -> V U1
 
-U1 -> opLogNeg V U1
+U1 -> opArSuma V U1
 U1 -> lambda
 
 V -> id V1

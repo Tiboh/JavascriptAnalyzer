@@ -36,8 +36,6 @@ CADENA \"(\\.|[^"])*\"
 
 "," {ECHO;writeToken("COMA", "", "Comma");return(COMA);}
 
-";" {ECHO;writeToken("PUNTOCOMA", "", "Punto comma");return(PUNTOCOMA);}
-
 {ENTERO} {ECHO;writeToken("ENTERO", yytext, "Entero");return(ENTERO);}
 
 {CADENA} {ECHO;writeToken("CADENA", yytext, "Cadena");return(CADENA);}
@@ -50,7 +48,7 @@ bool {ECHO;writeToken("BOOL", yytext, "Palabra reservada");return(BOOL);}
 
 "==" {ECHO;writeToken("OPRELIGUAL", "", "Operator relational igual");return(OPRELIGUAL);}
 
-"!" {ECHO;writeToken("OPLOGNEG", "", "Operator logico negacion");return(OPLOGNEG);}
+"&&" {ECHO;writeToken("OPLOGCON", "", "Operator logico conjucion");return(OPLOGCON);}
 
 "++" {ECHO;writeToken("OPINCR", "", "Operator de incremento");return(OPINCR);}
 

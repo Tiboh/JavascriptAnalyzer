@@ -1,5 +1,5 @@
 # For the current project
-*js
+*.js
 *.yy.c
 *.o
 *.exe
