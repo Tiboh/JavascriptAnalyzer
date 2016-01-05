@@ -1,10 +1,10 @@
 # For the current project
-.js
-.yy.c
-.o
-.exe
-.tab.c
-.tab.h
+*.yy.c
+*.o
+*.exe
+*.tab.c
+*.tab.h
+*.txt
 
 # Windows image file caches
 Thumbs.db

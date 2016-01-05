@@ -20,7 +20,8 @@ B -> S
 B1 -> B
 B1 -> abrLlave C cerLlave
 
-F -> function H id abrPar A cerPar abrLlave C cerLlave					
+F -> function H id abrPar A cerPar abrLlave C cerLlave
+
 
 T -> int
 T -> bool
