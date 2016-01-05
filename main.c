@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "pile.h"
+#include "global.h"
 
 /* For terminal color purpose */
 const char* RED_TERM = "\033[31;40m";
@@ -59,6 +59,7 @@ int main(int argc,char *argv[])
 	pile allTable = pile_creer(); // Create stack of all symbol table create
 
 	int globalSymbolTable = crear_tabla();
+	pile_empile(TSStack, globalSymbolTable);
 	
 	yyparse();
 	
@@ -69,7 +70,8 @@ int main(int argc,char *argv[])
 	fclose(errorFile);
 	
 	popAndPushToStacks(TSStack,allTable); // Pop and push the global table
-	writeSymbolTable(allTable, argv[3]);
+	
+	writeAndDestroySymbolTable(allTable, argv[3]);
 	
 	/* Destroy stacks */
 	pile_detruire(TSStack);
@@ -86,9 +88,9 @@ void popAndPushToStacks(const pile stackToPop, const pile stackToPush){
 	pile_empile(stackToPush,pile_depile(stackToPop));
 }
 
-void writeSymbolTable(const pile stack, const char* symbolTableFile){
+void writeAndDestroySymbolTable(const pile stack, const char* symbolTableFile){
 	int tableId;
-	while(!pile_vide()){
+	while(!pile_vide(stack)){
 		tableId = pile_depile(stack);
 		escribir_tabla(tableId,symbolTableFile);
 		destruir_tabla(tableId);

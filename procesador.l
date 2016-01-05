@@ -3,12 +3,12 @@
 %{
 	#include <stdio.h>
 	#include "y.tab.h"
+	#include "global.h"
 	
 	extern const char* RED_TERM;
 	extern const char* BLACK_TERM;
 	
 	extern FILE *tokenFile;
-	extern void writeToken(const char *codigo, const char *attributo, const char* commentario);
 %}
 
 ID [A-Za-z][A-Za-z0-9_]*
