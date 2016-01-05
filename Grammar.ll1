@@ -1,6 +1,6 @@
 //// JAVASCRIPT-PL
 
-Terminales = { default abrPar cerPar abrLlave cerLlave coma id entero cadena int chars bool opArSuma opRelIgual opLogCon opIncr opAs opAsSuma var function return write prompt if switch case doblePuntos break }
+Terminales = { logico default abrPar cerPar abrLlave cerLlave coma id entero cadena int chars bool opArSuma opRelIgual opLogCon opIncr opAs opAsSuma var function return write prompt if switch case doblePuntos break }
 
 NoTerminales = { P B B1 F G G1 G2 I J T S S2 C H A K L Q E E1 U U1 V V1 R R1 }
 
@@ -89,6 +89,7 @@ V -> abrPar E cerPar
 V -> entero
 V -> cadena
 V -> opIncr id
+V -> logico
 
 V1 -> lambda
 V1 -> abrPar L cerPar

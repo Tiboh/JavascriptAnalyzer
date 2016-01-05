@@ -14,6 +14,7 @@
 ID [A-Za-z][A-Za-z0-9_]*
 ENTERO [0-9]+
 CADENA \"(\\.|[^"])*\"
+LOGICO ("true"|"false")
 
 %x C_COMMENT
 
@@ -35,6 +36,8 @@ CADENA \"(\\.|[^"])*\"
 "," {ECHO;writeToken("COMA", "", "Comma");return(COMA);}
 
 {ENTERO} {ECHO;writeToken("ENTERO", yytext, "Entero");return(ENTERO);}
+
+{LOGICO} {ECHO;writeToken("LOGICO", yytext, "Logico");return(LOGICO);}
 
 {CADENA} {ECHO;writeToken("CADENA", yytext, "Cadena");return(CADENA);}
 

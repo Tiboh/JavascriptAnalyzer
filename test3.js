@@ -8,7 +8,7 @@ sef
 /*test commentaire */
 
 var int a 
-a = 0
+var bool test
 switch (num)
 {
 	case 1: write("lunes") break /* break in the same line */
@@ -19,6 +19,11 @@ switch (num)
 	
 	case 8: if (a == 0) /*if without instructions */
 		{ 					
+		}
+	
+	case 9: if (test == true ) /*if with bool parameter */
+		{ 			
+			write ("case 9 ")
 		}
 	
 	default: /* default is optional */
