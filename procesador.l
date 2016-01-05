@@ -4,6 +4,9 @@
 	#include <stdio.h>
 	#include "y.tab.h"
 	
+	extern const char* RED_TERM;
+	extern const char* BLACK_TERM;
+	
 	extern FILE *outFile_p;
 	extern void writeToken(const char *codigo, const char *attributo, const char* commentario);
 %}
@@ -21,11 +24,6 @@ CADENA \"(\\.|[^"])*\"
 <C_COMMENT>"*/" {ECHO; BEGIN(INITIAL); }
 <C_COMMENT>.    {ECHO; }
 
-[[:blank:]]+ {ECHO;/* Do nothing */}
-
-"\n" {ECHO;/* Do nothing */}
-
-
 "\(" {ECHO;writeToken("ABRPAR", "", "Abrir paréntesis");return(ABRPAR);}
 
 "\)" {ECHO;writeToken("CERPAR", "", "Cerrar paréntesis");return(CERPAR);}
@@ -35,8 +33,6 @@ CADENA \"(\\.|[^"])*\"
 "\}" {ECHO;writeToken("CERLLAVE", "", "Cerrar llave");return(CERLLAVE);}
 
 "," {ECHO;writeToken("COMA", "", "Comma");return(COMA);}
-
-";" {ECHO;writeToken("PUNTOCOMA", "", "Punto comma");return(PUNTOCOMA);}
 
 {ENTERO} {ECHO;writeToken("ENTERO", yytext, "Entero");return(ENTERO);}
 
@@ -50,7 +46,7 @@ bool {ECHO;writeToken("BOOL", yytext, "Palabra reservada");return(BOOL);}
 
 "==" {ECHO;writeToken("OPRELIGUAL", "", "Operator relational igual");return(OPRELIGUAL);}
 
-"!" {ECHO;writeToken("OPLOGNEG", "", "Operator logico negacion");return(OPLOGNEG);}
+"&&" {ECHO;writeToken("OPLOGCON", "", "Operator logico conjucion");return(OPLOGCON);}
 
 "++" {ECHO;writeToken("OPINCR", "", "Operator de incremento");return(OPINCR);}
 
@@ -83,5 +79,11 @@ bool {ECHO;writeToken("BOOL", yytext, "Palabra reservada");return(BOOL);}
 "break" {ECHO;writeToken("BREAK", yytext, "Palabra reservada");return(BREAK);}
 
 {ID} {ECHO;writeToken("ID", yytext, "Identificador");return(ID);}
+
+[ \t\n]+	{ECHO;/* ignorar blancos, tabuladores y saltos de línea */}
+
+. {
+  fprintf(stdout, " %sERROR LÉXICO: Carácter no válido: %s%s\n", RED_TERM, yytext, BLACK_TERM);
+}
 
 %%

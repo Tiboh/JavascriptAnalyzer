@@ -1,11 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "pile.h"
+
+/* For terminal color purpose */
+const char* RED_TERM = "\033[31;40m";
+const char* BLACK_TERM = "\033[37;40m";
+
 extern int  yyparse();
 extern FILE *yyin;
 FILE *outFile_p;
 
-main(int argc,char *argv[])
+int main(int argc,char *argv[])
 {
+		
 	if(argc<3)
 	{
 		printf("Please specify the input file & output file\n");
@@ -27,6 +34,7 @@ main(int argc,char *argv[])
 	yyparse();
 	fclose(fp);
 	fclose(outFile_p);
+	return 0;
 }
 
 void writeToken(const char *codigo, const char *attributo, const char* commentario){
