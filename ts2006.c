@@ -1834,7 +1834,7 @@ int escribir_tabla(int id_tabla, char *nombre_fichero)
    if (resultado == 0)
    {
 	 // Ya podemos escribir la tabla actual (a_escribir) ...
-	 controlador = fopen(nombre_fichero, "w"); // (intentamos) abrir el fichero para escritura
+	 controlador = fopen(nombre_fichero, "a"); // (intentamos) abrir el fichero para escritura
 	 if (controlador == NULL) 
 	 {
        // si falla , no podemos seguir

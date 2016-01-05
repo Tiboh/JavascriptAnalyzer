@@ -36,4 +36,4 @@ lex.yy.c: $(EXEC).l
 .PHONY: clean
 
 clean:
-	-rm -f *.o lex.yy.c *.tab.*  $(EXEC).exe *.output
+	-rm -f *.o lex.yy.c *.tab.*  $(EXEC).exe *.txt

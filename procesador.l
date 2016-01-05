@@ -7,7 +7,7 @@
 	extern const char* RED_TERM;
 	extern const char* BLACK_TERM;
 	
-	extern FILE *outFile_p;
+	extern FILE *tokenFile;
 	extern void writeToken(const char *codigo, const char *attributo, const char* commentario);
 %}
 

@@ -8,35 +8,89 @@ const char* BLACK_TERM = "\033[37;40m";
 
 extern int  yyparse();
 extern FILE *yyin;
-FILE *outFile_p;
+FILE *tokenFile;
+FILE *symbolTableFile;
+FILE *parserFile;
+FILE *errorFile;
 
 int main(int argc,char *argv[])
 {
-		
-	if(argc<3)
+	if(argc<6)
 	{
-		printf("Please specify the input file & output file\n");
+		printf("More arguments needed. (ex: myAnalyzer.exe input.txt token.txt symbolTable.txt parser.txt error.txt)\n");
 		exit(0);
 	}
-	FILE *fp=fopen(argv[1],"r");
-	if(!fp)
+	
+	/* Init input and output files */
+	FILE *inputFile=fopen(argv[1],"r");
+	if(!inputFile)
 	{
-		printf("Couldn't open file for reading\n");
+		printf("Couldn't open %s file for reading\n", argv[1]);
 		exit(0);
 	}
-	outFile_p=fopen(argv[2],"w");
-	if(!outFile_p)
+	tokenFile=fopen(argv[2],"w");
+	if(!tokenFile)
 	{
-		printf("Couldn't open output file for writting\n");
+		printf("Couldn't open %s file for writting\n", argv[2]);
 		exit(0);
 	}
-	yyin=fp;
+	symbolTableFile=fopen(argv[3],"w");
+	if(!tokenFile)
+	{
+		printf("Couldn't open %s file for writting\n", argv[3]);
+		exit(0);
+	}
+	parserFile=fopen(argv[4],"w");
+	if(!tokenFile)
+	{
+		printf("Couldn't open %s file for writting\n", argv[4]);
+		exit(0);
+	}
+	errorFile=fopen(argv[5],"w");
+	if(!tokenFile)
+	{
+		printf("Couldn't open %s file for writting\n", argv[5]);
+		exit(0);
+	}
+	yyin=inputFile;
+	
+	/* Create symbol table stack and the global symbol table*/
+	pile TSStack = pile_creer(); // Create stack of current symbol table
+	pile allTable = pile_creer(); // Create stack of all symbol table create
+
+	int globalSymbolTable = crear_tabla();
+	
 	yyparse();
-	fclose(fp);
-	fclose(outFile_p);
+	
+	fclose(inputFile);
+	fclose(tokenFile);
+	fclose(symbolTableFile);
+	fclose(parserFile);
+	fclose(errorFile);
+	
+	popAndPushToStacks(TSStack,allTable); // Pop and push the global table
+	writeSymbolTable(allTable, argv[3]);
+	
+	/* Destroy stacks */
+	pile_detruire(TSStack);
+	pile_detruire(allTable);
+
 	return 0;
 }
 
 void writeToken(const char *codigo, const char *attributo, const char* commentario){
-	fprintf(outFile_p, "<%s,%s> // token %s\n", codigo, attributo, commentario);
+	fprintf(tokenFile, "<%s,%s> // token %s\n", codigo, attributo, commentario);
+}
+
+void popAndPushToStacks(const pile stackToPop, const pile stackToPush){
+	pile_empile(stackToPush,pile_depile(stackToPop));
+}
+
+void writeSymbolTable(const pile stack, const char* symbolTableFile){
+	int tableId;
+	while(!pile_vide()){
+		tableId = pile_depile(stack);
+		escribir_tabla(tableId,symbolTableFile);
+		destruir_tabla(tableId);
+	}
 }
