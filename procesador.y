@@ -67,7 +67,18 @@ b:
 		{
 			fprintf(stderr," %sERROR SINTACTICO (Line:%d): identificator %s no esta declarado%s\n",RED_TERM, yylineno, $<p.lexema>3,BLACK_TERM);
 		}
-	} CERPAR ABRLLAVE g CERLLAVE
+	} CERPAR ABRLLAVE g 
+	
+	{
+		if(strcmp($<p.tipo>3,$<p.tipo>7) && strcmp($<p.tipo>3,$<p.tipo>3)){
+			$<p.tipo>$ = $<p.tipo>3;
+		}else{
+			$<p.tipo>$ = "error";
+			fprintf(stderr," %sERROR SINTACTICO (Line:%d): the variable of the switch should be compared to variables of the same type only %s/%s%s\n",RED_TERM, yylineno, $<p.tipo>3, $<p.tipo>7, BLACK_TERM);
+		}
+	}
+	
+	CERLLAVE
 	| s
 	;
 	
@@ -91,7 +102,15 @@ f:
 		crear_atributo_cadena(globalTable, $<p.lexema>3, "tipo", $<p.tipo>2);
 		int functionTable = crear_tabla();
 		crear_atributo_entero(globalTable, $<p.lexema>3, "idtabla", functionTable);
+<<<<<<< HEAD
 		pile_empile(TSStack, functionTable);
+=======
+			
+
+		pile_empile(TSStack, functionTable);
+					
+
+>>>>>>> b63a5e21b8c6a0bd424379016a99b4146999b2f3
 	} 
 	ABRLLAVE c {
 			fprintf(stderr," %s HEREE %s\n",RED_TERM, BLACK_TERM);
@@ -105,7 +124,7 @@ f:
 	;
 
 a:
-	/* empty */
+	/* empty */ { $<p.tipo>$ = "empty";}
 	| t ID k {
 		/// TO DO MAKE A FUNCTION WITH THAT CODE
 		int globalTable = pile_valeur(TSStack);
@@ -116,7 +135,7 @@ a:
 	;
 
 k:
-	/* empty */
+	/* empty */ { $<p.tipo>$ = "empty";}
 	| COMA t ID k {
 		/// TO DO MAKE A FUNCTION WITH THAT CODE
 		int globalTable = pile_valeur(TSStack);
@@ -140,13 +159,36 @@ s2:
 	;
 
 g:
-	CASE e DOBLEPUNTOS g1
+	CASE e {
+		$<p.tipo>$ = $<p.tipo>2;
+	}
+		
+	DOBLEPUNTOS g1
+	{	
+		if(!strcmp($<p.tipo>2,"empty")&&!strcmp($<p.tipo>5,"empty"))
+		{		
+			if(strcmp($<p.tipo>2,$<p.tipo>5)){
+				$<p.tipo>$ = $<p.tipo>2;
+				}
+		
+			else{
+				$<p.tipo>$ = "error";
+				fprintf(stderr," %sERROR SINTACTICO (Line:%d): the variable of case should be  of the same type %s/%s%s\n",RED_TERM, yylineno, $<p.tipo>2, $<p.tipo>5, BLACK_TERM);
+			}
+		}
+		else if (strcmp($<p.tipo>2,"empty") && !strcmp($<p.tipo>5,"empty")){
+				$<p.tipo>$ = $<p.tipo>5;
+			}
+			else if(!strcmp($<p.tipo>2,"empty") && strcmp($<p.tipo>5,"empty")){
+				$<p.tipo>$ = $<p.tipo>2;
+				}
+	}
 	| DEFAULT DOBLEPUNTOS g2
 	;
 	
 g1:
-	i
-	| b j i 
+	i {$<p.tipo>$ = $<p.tipo>1;}
+	| b j i {$<p.tipo>$ = $<p.tipo>3;}
 	;	
 
 g2:
@@ -160,12 +202,12 @@ j:
 	;
 
 i: 
-	/* empty */
-	| g
+	/* empty */ {$<p.tipo>$ = "empty";}
+	| g {$<p.tipo>$ = $<p.tipo>1;}
 	;
 
 c:
-	/* empty */
+	/* empty */ {$<p.tipo>$ = "empty";}
 	| b c { $<p.tipo>$ = $<p.tipo>2;}
 	;
 
@@ -261,7 +303,12 @@ u:
 u1:
 	/* empty */ { $<p.tipo>$ = "empty";}
 	| OPARSUMA v u1 { 
+<<<<<<< HEAD
 		if(!strcmp($<p.tipo>3,$<p.tipo>2) && !strcmp($<p.tipo>3,"int")){
+=======
+		fprintf(stderr," %s HEREE 6 %s\n",RED_TERM, BLACK_TERM);
+		if(strcmp($<p.tipo>3,$<p.tipo>2) && strcmp($<p.tipo>3,"int")){
+>>>>>>> b63a5e21b8c6a0bd424379016a99b4146999b2f3
 			$<p.tipo>$ = "int";
 		}else{
 			$<p.tipo>$ = "error";
@@ -280,7 +327,7 @@ v:
 	;
 
 v1:
-	/* empty */
+	/* empty */ { $<p.tipo>$ = "empty";}
 	| ABRPAR l CERPAR
 	;
 
