@@ -18,8 +18,10 @@ struct{
 	char* lexema;
 	int valueInt;
 	char* valueChar;
+	char* valueBool;
 	char* tipo;
 	char* vuelta;
+	int assign; /* 1 if assignation, 0 if else  */
 	}p;
 }
 
@@ -166,13 +168,99 @@ s:
 	RETURN e { $<p.tipo>$ = $<p.tipo>2;}
 	| WRITE ABRPAR l CERPAR
 	| PROMPT ABRPAR ID CERPAR
-	| ID s2
+	| ID {
+		currentID = $<p.lexema>1;
+		int numTable = existe_entrada_tablas_anteriores(TSStack,$<p.lexema>1);
+		if(numTable == -1) {
+			fprintf(stderr," %sERROR SINTACTICO (Line:%d): identificator %s no esta declarado%s\n",RED_TERM, yylineno, $<p.lexema>1,BLACK_TERM);
+			exit(-1);	
+		}
+	}
+	
+	s2 { 
+		int numTable = existe_entrada_tablas_anteriores(TSStack,$<p.lexema>1);
+		if($<p.assign>3 == 1){ // if it's an assignation
+			if (!strcmp($<p.tipo>3,"int")){
+				if (existe_atributo(numTable,$<p.lexema>1,"value") == 0){ // exists
+					asignar_valor_atributo_entero(numTable,$<p.lexema>1,"value",$<p.valueInt>3);
+				}
+				else {
+					crear_atributo_entero(numTable,$<p.lexema>1,"value",$<p.valueInt>3);
+				}
+			}
+			else if (!strcmp($<p.tipo>3,"char")){
+				if (existe_atributo(numTable,$<p.lexema>1,"value") == 0){ // exists
+					asignar_valor_atributo_cadena(numTable,$<p.lexema>1,"value",$<p.valueChar>3);
+				}
+				else {
+					crear_atributo_cadena(numTable,$<p.lexema>1,"value",$<p.valueChar>3);
+				}
+			}
+			else if (!strcmp($<p.tipo>3,"bool")){
+				if (existe_atributo(numTable,$<p.lexema>1,"value") == 0){ // exists
+					asignar_valor_atributo_cadena(numTable,$<p.lexema>1,"value",$<p.valueBool>3);
+				}
+				else {
+					crear_atributo_cadena(numTable,$<p.lexema>1,"value",$<p.valueBool>3);
+				}
+			}
+		}
+		else { //if not assignation, it's function
+		
+		}
+	}
+
 	;
 
 s2:
-	OPAS e
-	| ABRPAR l CERPAR
-	| OPASSUMA e
+	OPAS e { 
+		
+		if (!strcmp($<p.tipo>2,"int")){
+			$<p.tipo>$ = $<p.tipo>2;
+			$<p.valueInt>$ = $<p.valueInt>2;
+		}
+		else if (!strcmp($<p.tipo>2,"char")){
+			$<p.tipo>$ = $<p.tipo>2;
+			$<p.valueChar>$ = $<p.valueChar>2;
+		}	
+		else if (!strcmp($<p.tipo>2,"bool")){
+			$<p.tipo>$ = $<p.tipo>2;
+			$<p.valueBool>$ = $<p.valueBool>2;
+		}	
+		else{
+				fprintf(stderr," %sERROR SINTACTICO (Line:%d): The variable of type %s can't be assign to a variable of type %s %s\n",RED_TERM, yylineno, $<p.tipo>2, $<p.tipo>$, BLACK_TERM);	
+			}
+		
+		
+		}
+	| ABRPAR {
+		$<p.tipo>$="funcion";
+	}
+	l CERPAR 
+	| OPASSUMA e{ 
+			if (!strcmp($<p.tipo>2,"int")){
+				$<p.tipo>$ = $<p.tipo>2;
+				$<p.valueInt>$ += $<p.valueInt>2;
+			}
+			else {
+				fprintf(stderr," %sERROR SINTACTICO (Line:%d): Los variables debe ser de tipo entero %s/%s %s\n",RED_TERM, yylineno, $<p.tipo>$, $<p.tipo>2,BLACK_TERM);
+			}
+		}
+	| OPINCR { 
+		if (!strcmp(consultar_valor_atributo_cadena(pile_valeur(TSStack), currentID, "tipo"),"int")){
+			if (existe_atributo(pile_valeur(TSStack),$<p.lexema>1,"value") == 0){ // exists
+				int idValue = consultar_valor_atributo_entero(pile_valeur(TSStack), currentID, "value");
+				idValue++;
+				asignar_valor_atributo_entero(pile_valeur(TSStack), currentID,"value", idValue);
+			}
+			else {
+				fprintf(stderr," %sERROR SINTACTICO (Line:%d): the variable %s hasn't been initialized %s\n",RED_TERM, yylineno, currentID, BLACK_TERM);	
+			}
+		}
+		else {
+			fprintf(stderr," %sERROR SINTACTICO (Line:%d): la variable %s debe ser de tipo int %s\n",RED_TERM, yylineno, currentID, BLACK_TERM);	
+		}	
+	}
 	;
 
 g:
@@ -341,13 +429,13 @@ v:
 	| ABRPAR e CERPAR
 	| ENTERO { $<p.tipo>$ = "int"; $<p.valueInt>$ = $<p.valueInt>1;}
 	| CADENA { $<p.tipo>$ = "chars"; $<p.valueChar>$ = $<p.valueChar>1;}
-	| OPINCR ID
-	| LOGICO { $<p.tipo>$ = "bool"; $<p.valueChar>$ = $<p.valueChar>1;}
+	| LOGICO { $<p.tipo>$ = "bool"; $<p.valueBool>$ = $<p.valueBool>1;}
 	;
 
 v1:
 	/* empty */ { $<p.tipo>$ = "empty";}
 	| ABRPAR l CERPAR
+	| OPINCR
 	;
 
 %%
