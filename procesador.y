@@ -67,7 +67,18 @@ b:
 		{
 			fprintf(stderr," %sERROR SINTACTICO (Line:%d): identificator %s no esta declarado%s\n",RED_TERM, yylineno, $<p.lexema>3,BLACK_TERM);
 		}
-	} CERPAR ABRLLAVE g CERLLAVE
+	} CERPAR ABRLLAVE g 
+	
+	{
+		if(strcmp($<p.tipo>3,$<p.tipo>6) && strcmp($<p.tipo>3,"int")){
+			$<p.tipo>$ = "int";
+		}else{
+			$<p.tipo>$ = "error";
+			fprintf(stderr," %sERROR SINTACTICO (Line:%d): the variable of the switch should be compared to variables of the same type only %s/%s%s\n",RED_TERM, yylineno, $<p.tipo>3, $<p.tipo>6, BLACK_TERM);
+		}
+	}
+	
+	CERLLAVE
 	| s
 	;
 	
