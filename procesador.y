@@ -6,7 +6,6 @@
 	extern int yylineno;
 	
 	char* currentID;
-	int contador;
 
 	void yyerror (char const *s) {
 	   fprintf (stderr,  " %sERROR SINTÁCTICO: (Line:%d) %s%s\n" , RED_TERM, yylineno, s, BLACK_TERM);
@@ -98,16 +97,33 @@ t:
 	;
 
 f:
-	FUNCTION h ID { currentID = $<p.lexema>3; }
-	ABRPAR a CERPAR {
+	FUNCTION h ID { 
+		currentID = $<p.lexema>3; 
 		int globalTable = pile_valeur(TSStack);
 		crear_entrada(globalTable,$<p.lexema>3);
 		asignar_tipo_entrada(globalTable, $<p.lexema>3, "funcion");
 		crear_atributo_cadena(globalTable, $<p.lexema>3, "tipo", $<p.tipo>2);
+	}
+	ABRPAR a CERPAR {
 		int functionTable = crear_tabla();
+		int globalTable = pile_valeur(TSStack);
 		crear_atributo_entero(globalTable, $<p.lexema>3, "idtabla", functionTable);
 		pile_empile(TSStack, functionTable);
-	} 
+		
+		int parametros = consultar_valor_atributo_entero(globalTable,$<p.lexema>3,"parametros");
+		if(parametros!=0){
+			int i;
+			for(i = 1 ; i <= parametros ; i++){
+				char* currentParameterType = concatStringInt("tipoparam", i);
+				char* currentParameterLex = concatStringInt("lexemaparam", i);
+				char* lexCurrent = (char*) consultar_valor_atributo_cadena(globalTable,$<p.lexema>3,currentParameterLex);
+				char* typeCurrent = (char*) consultar_valor_atributo_cadena(globalTable,$<p.lexema>3,currentParameterType);
+				crear_entrada(functionTable,lexCurrent);
+				asignar_tipo_entrada(functionTable, lexCurrent, "parametro");
+				crear_atributo_cadena(functionTable, lexCurrent, "tipo", typeCurrent);
+			}
+		}
+	}
 	ABRLLAVE c {
 			fprintf(stderr," %s HEREE %s\n",RED_TERM, BLACK_TERM);
 			/*if(strcmp($<p.tipo>2,$<p.tipo>10)){
@@ -121,33 +137,29 @@ f:
 
 a:
 	/* empty */ { $<p.tipo>$ = "empty";}
-	| t ID k {
+	| t ID {
 		int currentTable = pile_valeur(TSStack);
-		fprintf(stderr," %s Cureent ID : %s %d %s\n",RED_TERM, currentID, currentTable, BLACK_TERM);
-		contador = 1;
-		char* tipoParamNum = concatStringInt("tipoparam", contador);
-		char* lexemaParamNum = concatStringInt("lexemaparam", contador);
-		if (crear_atributo_cadena(currentTable, currentID, tipoParamNum, $<p.lexema>1)!=0)
-		{
-			fprintf(stderr," %s %s %s\n",RED_TERM, consultar_descripcion_ultimo_error(), BLACK_TERM);
-		}
+		int parametros = 1;
+		char* tipoParamNum = concatStringInt("tipoparam", parametros);
+		char* lexemaParamNum = concatStringInt("lexemaparam", parametros);
+		crear_atributo_cadena(currentTable, currentID, tipoParamNum, $<p.lexema>1);
 		crear_atributo_cadena(currentTable, currentID, lexemaParamNum, $<p.lexema>2);
-		crear_atributo_entero(currentTable, currentID, "parametros", contador);
-	}
+		crear_atributo_entero(currentTable, currentID, "parametros", parametros);
+	} k
 	;
 
 k:
 	/* empty */ { $<p.tipo>$ = "empty";}
-	| COMA t ID k {
+	| COMA t ID {
 		int currentTable = pile_valeur(TSStack);
-		int parametros = (int) consultar_valor_atributo_entero(currentTable,$<p.lexema>3,"tipo");
+		int parametros = consultar_valor_atributo_entero(currentTable,currentID,"parametros");
 		parametros++;
 		char* tipoParamNum = concatStringInt("tipoparam", parametros);
 		char* lexemaParamNum = concatStringInt("lexemaparam", parametros);
 		crear_atributo_cadena(currentTable, currentID, tipoParamNum, $<p.lexema>2);
 		crear_atributo_cadena(currentTable, currentID, lexemaParamNum, $<p.lexema>3);
-		asignar_valor_atributo_entero(currentTable,$<p.lexema>3,"parametros", parametros);
-	}
+		asignar_valor_atributo_entero(currentTable,currentID,"parametros", parametros);
+	} k
 	;
 
 s:
