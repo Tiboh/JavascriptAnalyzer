@@ -99,16 +99,12 @@ void writeAndDestroySymbolTable(const pile stack, const char* symbolTableFile){
 }
 
 int existe_entrada_tablas_anteriores(const pile stack, char *lexema){
-	int retour;
-	if(pile_vide(stack)){
-		retour = -1;
-	}else{
-		retour = 0;
-	}
+	int retour = -1;
 	int incr;
 	for (incr = 0; incr < pile_taille(stack) ; incr++){
-		if(existe_entrada(pile_valeur_position(stack, incr),lexema) == 0){
-			retour = 1;
+		int tableID = pile_valeur_position(stack, incr);
+		if(existe_entrada(tableID,lexema) == 0){
+			retour = tableID;
 		}
 	}
 	return retour;

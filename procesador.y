@@ -46,7 +46,7 @@ p:
 
 b:
 	VAR t ID {
-		if (!existe_entrada_tablas_anteriores(TSStack,$<p.lexema>3)) 
+		if (existe_entrada_tablas_anteriores(TSStack,$<p.lexema>3) == -1) 
 		{
 			int currentTable = pile_valeur(TSStack);
 			crear_entrada(currentTable,$<p.lexema>3);
@@ -64,14 +64,12 @@ b:
 		}
 	} CERPAR b1
 	| SWITCH ABRPAR ID {
-		
-		if (!existe_entrada_tablas_anteriores(TSStack,$<p.lexema>3)) 
+		if (existe_entrada_tablas_anteriores(TSStack,$<p.lexema>3) == -1) 
 		{
 			fprintf(stderr," %sERROR SINTACTICO (Line:%d): identificator %s no esta declarado%s\n",RED_TERM, yylineno, $<p.lexema>3,BLACK_TERM);
 			exit(-1);
 		}
 	} CERPAR ABRLLAVE g 
-	
 	{
 		int currentTableID = pile_valeur(TSStack);
 		char* idTipo = (char*) consultar_valor_atributo_cadena(currentTableID,$<p.lexema>3,"tipo");
@@ -80,7 +78,6 @@ b:
 			fprintf(stderr," %sERROR SINTACTICO (Line:%d): the variable of the switch should be compared to variables of the same type only %s/%s%s\n",RED_TERM, yylineno, idTipo, $<p.tipo>7, BLACK_TERM);
 		}
 	}
-	
 	CERLLAVE
 	| s
 	;
@@ -122,6 +119,8 @@ f:
 				asignar_tipo_entrada(functionTable, lexCurrent, "parametro");
 				crear_atributo_cadena(functionTable, lexCurrent, "tipo", typeCurrent);
 			}
+		}else{
+			crear_atributo_entero(globalTable, $<p.lexema>3, "parametros", parametros);
 		}
 	}
 	ABRLLAVE c {
@@ -173,6 +172,7 @@ s2:
 	OPAS e
 	| ABRPAR l CERPAR
 	| OPASSUMA e
+	| OPINCR
 	;
 
 g:
@@ -329,7 +329,7 @@ u1:
 	
 v:
 	ID v1 {
-		if (!existe_entrada_tablas_anteriores(TSStack,$<p.lexema>1)) 
+		if (existe_entrada_tablas_anteriores(TSStack,$<p.lexema>1) == -1) 
 		{
 			fprintf(stderr," %sERROR SINTACTICO (Line:%d): identificator %s no esta declarado%s\n",RED_TERM, yylineno, $<p.lexema>1,BLACK_TERM);
 			exit(-1);
@@ -341,13 +341,13 @@ v:
 	| ABRPAR e CERPAR
 	| ENTERO { $<p.tipo>$ = "int"; $<p.valueInt>$ = $<p.valueInt>1;}
 	| CADENA { $<p.tipo>$ = "chars"; $<p.valueChar>$ = $<p.valueChar>1;}
-	| OPINCR ID
 	| LOGICO { $<p.tipo>$ = "bool"; $<p.valueChar>$ = $<p.valueChar>1;}
 	;
 
 v1:
 	/* empty */ { $<p.tipo>$ = "empty";}
 	| ABRPAR l CERPAR
+	| OPINCR
 	;
 
 %%

@@ -40,7 +40,8 @@ S -> prompt abrPar id cerPar
 
 S2 -> opAs E	
 S2 -> abrPar L cerPar	
-S2 -> opAsSuma E	
+S2 -> opAsSuma E
+S2 -> opIncr
 
 G -> case E doblePuntos G1
 G -> default doblePuntos G2
@@ -87,11 +88,11 @@ U1 -> lambda
 V -> id V1
 V -> abrPar E cerPar
 V -> entero
-V -> cadena
-V -> opIncr id
+V -> cadena 
 V -> logico
 
 V1 -> lambda
 V1 -> abrPar L cerPar
+V1 -> opIncr 
 
 }
