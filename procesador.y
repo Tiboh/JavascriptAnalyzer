@@ -70,10 +70,8 @@ b:
 	} CERPAR ABRLLAVE g 
 	
 	{
-		if(strcmp($<p.tipo>3,$<p.tipo>7) && strcmp($<p.tipo>3,$<p.tipo>3)){
-			$<p.tipo>$ = $<p.tipo>3;
+		if(!strcmp($<p.tipo>3,$<p.tipo>7) && strcmp($<p.tipo>3,"error")){
 		}else{
-			$<p.tipo>$ = "error";
 			fprintf(stderr," %sERROR SINTACTICO (Line:%d): the variable of the switch should be compared to variables of the same type only %s/%s%s\n",RED_TERM, yylineno, $<p.tipo>3, $<p.tipo>7, BLACK_TERM);
 		}
 	}
@@ -102,15 +100,7 @@ f:
 		crear_atributo_cadena(globalTable, $<p.lexema>3, "tipo", $<p.tipo>2);
 		int functionTable = crear_tabla();
 		crear_atributo_entero(globalTable, $<p.lexema>3, "idtabla", functionTable);
-<<<<<<< HEAD
 		pile_empile(TSStack, functionTable);
-=======
-			
-
-		pile_empile(TSStack, functionTable);
-					
-
->>>>>>> b63a5e21b8c6a0bd424379016a99b4146999b2f3
 	} 
 	ABRLLAVE c {
 			fprintf(stderr," %s HEREE %s\n",RED_TERM, BLACK_TERM);
@@ -126,7 +116,6 @@ f:
 a:
 	/* empty */ { $<p.tipo>$ = "empty";}
 	| t ID k {
-		/// TO DO MAKE A FUNCTION WITH THAT CODE
 		int globalTable = pile_valeur(TSStack);
 		contador = 1;
 		char* paramNum = concatStringInt("tipoparam", contador);
@@ -137,7 +126,6 @@ a:
 k:
 	/* empty */ { $<p.tipo>$ = "empty";}
 	| COMA t ID k {
-		/// TO DO MAKE A FUNCTION WITH THAT CODE
 		int globalTable = pile_valeur(TSStack);
 		contador++;
 		char* paramNum = concatStringInt("tipoparam", contador);
@@ -165,23 +153,21 @@ g:
 		
 	DOBLEPUNTOS g1
 	{	
-		if(!strcmp($<p.tipo>2,"empty")&&!strcmp($<p.tipo>5,"empty"))
+		if(strcmp($<p.tipo>2,"error") && strcmp($<p.tipo>5,"empty") && strcmp($<p.tipo>5,"error"))
 		{		
-			if(strcmp($<p.tipo>2,$<p.tipo>5)){
+			if(!strcmp($<p.tipo>2,$<p.tipo>5)){
 				$<p.tipo>$ = $<p.tipo>2;
-				}
-		
+			}
 			else{
 				$<p.tipo>$ = "error";
 				fprintf(stderr," %sERROR SINTACTICO (Line:%d): the variable of case should be  of the same type %s/%s%s\n",RED_TERM, yylineno, $<p.tipo>2, $<p.tipo>5, BLACK_TERM);
 			}
 		}
-		else if (strcmp($<p.tipo>2,"empty") && !strcmp($<p.tipo>5,"empty")){
-				$<p.tipo>$ = $<p.tipo>5;
-			}
-			else if(!strcmp($<p.tipo>2,"empty") && strcmp($<p.tipo>5,"empty")){
+		else if (!strcmp($<p.tipo>5,"empty")){
 				$<p.tipo>$ = $<p.tipo>2;
-				}
+		}else{
+			fprintf(stderr," %sERROR SINTACTICO (Line:%d): the variable of case should be  of the same type %s/%s%s\n",RED_TERM, yylineno, $<p.tipo>2, $<p.tipo>5, BLACK_TERM);
+		}
 	}
 	| DEFAULT DOBLEPUNTOS g2
 	;
@@ -303,12 +289,7 @@ u:
 u1:
 	/* empty */ { $<p.tipo>$ = "empty";}
 	| OPARSUMA v u1 { 
-<<<<<<< HEAD
 		if(!strcmp($<p.tipo>3,$<p.tipo>2) && !strcmp($<p.tipo>3,"int")){
-=======
-		fprintf(stderr," %s HEREE 6 %s\n",RED_TERM, BLACK_TERM);
-		if(strcmp($<p.tipo>3,$<p.tipo>2) && strcmp($<p.tipo>3,"int")){
->>>>>>> b63a5e21b8c6a0bd424379016a99b4146999b2f3
 			$<p.tipo>$ = "int";
 		}else{
 			$<p.tipo>$ = "error";
