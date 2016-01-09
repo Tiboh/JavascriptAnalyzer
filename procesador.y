@@ -1,6 +1,7 @@
 %{
 	#include <stdio.h>
 	#include "global.h"
+	#include <stdlib.h>
 	
 	extern int yylineno;
 	
@@ -64,16 +65,20 @@ b:
 		}
 	} CERPAR b1
 	| SWITCH ABRPAR ID {
+		
 		if (!existe_entrada_tablas_anteriores(TSStack,$<p.lexema>3)) 
 		{
 			fprintf(stderr," %sERROR SINTACTICO (Line:%d): identificator %s no esta declarado%s\n",RED_TERM, yylineno, $<p.lexema>3,BLACK_TERM);
+			exit(-1);
 		}
 	} CERPAR ABRLLAVE g 
 	
 	{
-		if(!strcmp($<p.tipo>3,$<p.tipo>7) && strcmp($<p.tipo>3,"error")){
+		int currentTableID = pile_valeur(TSStack);
+		char* idTipo = (char*) consultar_valor_atributo_cadena(currentTableID,$<p.lexema>3,"tipo");
+		if(!strcmp(idTipo,$<p.tipo>7) && strcmp($<p.tipo>7,"error")){
 		}else{
-			fprintf(stderr," %sERROR SINTACTICO (Line:%d): the variable of the switch should be compared to variables of the same type only %s/%s%s\n",RED_TERM, yylineno, $<p.tipo>3, $<p.tipo>7, BLACK_TERM);
+			fprintf(stderr," %sERROR SINTACTICO (Line:%d): the variable of the switch should be compared to variables of the same type only %s/%s%s\n",RED_TERM, yylineno, idTipo, $<p.tipo>7, BLACK_TERM);
 		}
 	}
 	
@@ -149,6 +154,7 @@ s2:
 
 g:
 	CASE e {
+		
 		$<p.tipo>$ = $<p.tipo>2;
 	}
 		
@@ -167,7 +173,7 @@ g:
 		else if (!strcmp($<p.tipo>5,"empty")){
 				$<p.tipo>$ = $<p.tipo>2;
 		}else{
-			fprintf(stderr," %sERROR SINTACTICO (Line:%d): the variable of case should be  of the same type %s/%s%s\n",RED_TERM, yylineno, $<p.tipo>2, $<p.tipo>5, BLACK_TERM);
+			fprintf(stderr," %sERROR SINTACTICO (Line:%d): definir erreur %s/%s%s\n",RED_TERM, yylineno, $<p.tipo>2, $<p.tipo>5, BLACK_TERM);
 		}
 	}
 	| DEFAULT DOBLEPUNTOS g2
