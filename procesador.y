@@ -52,7 +52,7 @@ b:
 			int currentTable = pile_valeur(TSStack);
 			crear_entrada(currentTable,$<p.lexema>3);
 			asignar_tipo_entrada(currentTable, $<p.lexema>3, "variable");
-			crear_atributo_cadena(globalTable, $<p.lexema>3, "tipo", $<p.lexema>2);
+			crear_atributo_cadena(currentTable, $<p.lexema>3, "tipo", $<p.lexema>2);
 		}
 		else
 		{
