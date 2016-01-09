@@ -88,7 +88,7 @@ U1 -> lambda
 V -> id V1
 V -> abrPar E cerPar
 V -> entero
-V -> cadena 
+V -> cadena
 V -> logico
 
 V1 -> lambda
