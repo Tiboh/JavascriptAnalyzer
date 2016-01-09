@@ -58,7 +58,7 @@ b:
 		}
 	}
 	| IF ABRPAR e { 
-		if(!strcmp($<p.tipo>3,"int") && !strcmp($<p.tipo>3,"bool")){
+		if(strcmp($<p.tipo>3,"int") && strcmp($<p.tipo>3,"bool")){
 			fprintf(stderr," %sERROR SINTACTICO (Line:%d): condicion del IF debe ser de tipo int o bool%s\n",RED_TERM, yylineno,BLACK_TERM);
 		}
 	} CERPAR b1
@@ -91,11 +91,7 @@ f:
 		crear_atributo_cadena(globalTable, $<p.lexema>3, "tipo", $<p.tipo>2);
 		int functionTable = crear_tabla();
 		crear_atributo_entero(globalTable, $<p.lexema>3, "idtabla", functionTable);
-			fprintf(stderr," %s HEREE %s\n",RED_TERM, BLACK_TERM);
-
 		pile_empile(TSStack, functionTable);
-					fprintf(stderr," %s HEREE %s\n",RED_TERM, BLACK_TERM);
-
 	} 
 	ABRLLAVE c {
 			fprintf(stderr," %s HEREE %s\n",RED_TERM, BLACK_TERM);
@@ -189,19 +185,23 @@ q:
 	;
 
 e:
-	r e1 { 
-		if(strcmp($<p.tipo>1,$<p.tipo>2) && !strcmp($<p.tipo>2,"error")){
-			$<p.tipo>$ = $<p.tipo>2;
+	r e1 {
+		if(!strcmp($<p.tipo>2,"empty")){
+			$<p.tipo>$ = $<p.tipo>1;
 		}else{
-			$<p.tipo>$ = "error";
+			if(!strcmp($<p.tipo>1,$<p.tipo>2) && strcmp($<p.tipo>2,"error")){
+				$<p.tipo>$ = $<p.tipo>2;
+			}else{
+				$<p.tipo>$ = "error";
+			}
 		}
 	}
 	;
 	
 e1:
-	/* empty */
+	/* empty */ { $<p.tipo>$ = "empty";}
 	| OPLOGCON r e1 { 
-		if(strcmp($<p.tipo>3,$<p.tipo>2) && strcmp($<p.tipo>3,"bool")){
+		if(!strcmp($<p.tipo>3,$<p.tipo>2) && !strcmp($<p.tipo>3,"bool")){
 			$<p.tipo>$ = "bool";
 		}else{
 			$<p.tipo>$ = "error";
@@ -212,21 +212,26 @@ e1:
 	
 r:	
 	u r1 {
-		if(strcmp($<p.tipo>1,$<p.tipo>2) && !strcmp($<p.tipo>2,"error")){
-			$<p.tipo>$ = $<p.tipo>2;
+		if(!strcmp($<p.tipo>2,"empty")){
+			$<p.tipo>$ = $<p.tipo>1;
 		}else{
-			$<p.tipo>$ = "error";
+			if(!strcmp($<p.tipo>1,$<p.tipo>2) && strcmp($<p.tipo>2,"error")){
+				$<p.tipo>$ = $<p.tipo>2;
+			}else{
+				$<p.tipo>$ = "error";
+			}
 		}
 	}
 	;
 
 r1:
-	/* empty */
+	/* empty */ { $<p.tipo>$ = "empty";}
 	| OPRELIGUAL u r1 { 
-		if(strcmp($<p.tipo>3,$<p.tipo>2)){
-			if(strcmp($<p.tipo>3,"int")){
+		fprintf(stderr," %s r %s\n",RED_TERM, BLACK_TERM);
+		if(!strcmp($<p.tipo>3,$<p.tipo>2)){
+			if(!strcmp($<p.tipo>3,"int")){
 				$<p.tipo>$ = "int";
-			}else if(strcmp($<p.tipo>3,"bool")){
+			}else if(!strcmp($<p.tipo>3,"bool")){
 				$<p.tipo>$ = "bool";
 			}else{
 				$<p.tipo>$ = "error";
@@ -240,19 +245,23 @@ r1:
 	;
 
 u:
-	v u1 { 
-		if(strcmp($<p.tipo>1,$<p.tipo>2) && !strcmp($<p.tipo>2,"error")){
-			$<p.tipo>$ = $<p.tipo>2;
+	v u1 {
+		if(!strcmp($<p.tipo>2,"empty")){
+			$<p.tipo>$ = $<p.tipo>1;
 		}else{
-			$<p.tipo>$ = "error";
+			if(!strcmp($<p.tipo>1,$<p.tipo>2) && strcmp($<p.tipo>2,"error")){
+				$<p.tipo>$ = $<p.tipo>2;
+			}else{
+				$<p.tipo>$ = "error";
+			}
 		}
 	}
 	;
 
 u1:
-	/* empty */
+	/* empty */ { $<p.tipo>$ = "empty";}
 	| OPARSUMA v u1 { 
-		if(strcmp($<p.tipo>3,$<p.tipo>2) && strcmp($<p.tipo>3,"int")){
+		if(!strcmp($<p.tipo>3,$<p.tipo>2) && !strcmp($<p.tipo>3,"int")){
 			$<p.tipo>$ = "int";
 		}else{
 			$<p.tipo>$ = "error";
