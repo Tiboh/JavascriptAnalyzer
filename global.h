@@ -3,6 +3,7 @@
 /* For terminal color purpose */
 const char* RED_TERM;
 const char* BLACK_TERM;
+const char* GREEN_TERM;
 
 pile TSStack; // stack of current symbol table
 pile allTable; // stack of all symbol table create

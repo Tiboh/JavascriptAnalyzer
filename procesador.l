@@ -38,7 +38,7 @@ LOGICO ("true"|"false")
 
 {ENTERO} {ECHO;writeToken("ENTERO", yytext, "Entero");yylval.p.valueInt = atoi(yytext);return(ENTERO);}
 
-{LOGICO} {ECHO;writeToken("LOGICO", yytext, "Logico");yylval.p.valueChar = strdup(yytext);return(LOGICO);}
+{LOGICO} {ECHO;writeToken("LOGICO", yytext, "Logico");yylval.p.valueBool = strdup(yytext);return(LOGICO);}
 
 {CADENA} {ECHO;writeToken("CADENA", yytext, "Cadena");yylval.p.valueChar = strdup(yytext);return(CADENA);}
 

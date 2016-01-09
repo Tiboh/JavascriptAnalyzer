@@ -15,6 +15,7 @@ int main(int argc,char *argv[])
 {
 	RED_TERM = "\033[31;40m";
 	BLACK_TERM = "\033[37;40m";
+	GREEN_TERM = "\033[32;40m";
 		
 	if(argc<6)
 	{
