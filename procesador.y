@@ -122,20 +122,31 @@ f:
 a:
 	/* empty */ { $<p.tipo>$ = "empty";}
 	| t ID k {
-		int globalTable = pile_valeur(TSStack);
+		int currentTable = pile_valeur(TSStack);
+		fprintf(stderr," %s Cureent ID : %s %d %s\n",RED_TERM, currentID, currentTable, BLACK_TERM);
 		contador = 1;
-		char* paramNum = concatStringInt("tipoparam", contador);
-		crear_atributo_cadena(globalTable, currentID, paramNum, $<p.lexema>1);
+		char* tipoParamNum = concatStringInt("tipoparam", contador);
+		char* lexemaParamNum = concatStringInt("lexemaparam", contador);
+		if (crear_atributo_cadena(currentTable, currentID, tipoParamNum, $<p.lexema>1)!=0)
+		{
+			fprintf(stderr," %s %s %s\n",RED_TERM, consultar_descripcion_ultimo_error(), BLACK_TERM);
+		}
+		crear_atributo_cadena(currentTable, currentID, lexemaParamNum, $<p.lexema>2);
+		crear_atributo_entero(currentTable, currentID, "parametros", contador);
 	}
 	;
 
 k:
 	/* empty */ { $<p.tipo>$ = "empty";}
 	| COMA t ID k {
-		int globalTable = pile_valeur(TSStack);
-		contador++;
-		char* paramNum = concatStringInt("tipoparam", contador);
-		crear_atributo_cadena(globalTable, currentID, paramNum, $<p.lexema>2);
+		int currentTable = pile_valeur(TSStack);
+		int parametros = (int) consultar_valor_atributo_entero(currentTable,$<p.lexema>3,"tipo");
+		parametros++;
+		char* tipoParamNum = concatStringInt("tipoparam", parametros);
+		char* lexemaParamNum = concatStringInt("lexemaparam", parametros);
+		crear_atributo_cadena(currentTable, currentID, tipoParamNum, $<p.lexema>2);
+		crear_atributo_cadena(currentTable, currentID, lexemaParamNum, $<p.lexema>3);
+		asignar_valor_atributo_entero(currentTable,$<p.lexema>3,"parametros", parametros);
 	}
 	;
 
@@ -236,7 +247,7 @@ e:
 e1:
 	/* empty */ { $<p.tipo>$ = "empty";}
 	| OPLOGCON r e1 { 
-		if(!strcmp($<p.tipo>3,$<p.tipo>2) && !strcmp($<p.tipo>3,"bool")){
+		if((!strcmp($<p.tipo>3,$<p.tipo>2) || !strcmp($<p.tipo>3,"empty")) && !strcmp($<p.tipo>2,"bool")){
 			$<p.tipo>$ = "bool";
 		}else{
 			$<p.tipo>$ = "error";
@@ -262,11 +273,10 @@ r:
 r1:
 	/* empty */ { $<p.tipo>$ = "empty";}
 	| OPRELIGUAL u r1 { 
-		fprintf(stderr," %s r %s\n",RED_TERM, BLACK_TERM);
-		if(!strcmp($<p.tipo>3,$<p.tipo>2)){
-			if(!strcmp($<p.tipo>3,"int")){
+		if(!strcmp($<p.tipo>3,$<p.tipo>2) || !strcmp($<p.tipo>3,"empty")){
+			if(!strcmp($<p.tipo>2,"int")){
 				$<p.tipo>$ = "int";
-			}else if(!strcmp($<p.tipo>3,"bool")){
+			}else if(!strcmp($<p.tipo>2,"bool")){
 				$<p.tipo>$ = "bool";
 			}else{
 				$<p.tipo>$ = "error";
@@ -296,7 +306,7 @@ u:
 u1:
 	/* empty */ { $<p.tipo>$ = "empty";}
 	| OPARSUMA v u1 { 
-		if(!strcmp($<p.tipo>3,$<p.tipo>2) && !strcmp($<p.tipo>3,"int")){
+		if((!strcmp($<p.tipo>3,$<p.tipo>2)  || !strcmp($<p.tipo>3,"empty")) && !strcmp($<p.tipo>2,"int")){
 			$<p.tipo>$ = "int";
 		}else{
 			$<p.tipo>$ = "error";
@@ -306,7 +316,16 @@ u1:
 	;
 	
 v:
-	ID v1 {/*$<p.tipo>$ = serach_tipo_in_tabla */}
+	ID v1 {
+		if (!existe_entrada_tablas_anteriores(TSStack,$<p.lexema>1)) 
+		{
+			fprintf(stderr," %sERROR SINTACTICO (Line:%d): identificator %s no esta declarado%s\n",RED_TERM, yylineno, $<p.lexema>1,BLACK_TERM);
+			exit(-1);
+		}else{
+			int currentTableID = pile_valeur(TSStack);
+			$<p.tipo>$ = (char*) consultar_valor_atributo_cadena(currentTableID,$<p.lexema>1,"tipo");
+		}
+	}
 	| ABRPAR e CERPAR
 	| ENTERO { $<p.tipo>$ = "int"; $<p.valueInt>$ = $<p.valueInt>1;}
 	| CADENA { $<p.tipo>$ = "chars"; $<p.valueChar>$ = $<p.valueChar>1;}
