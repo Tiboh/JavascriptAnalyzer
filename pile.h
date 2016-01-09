@@ -33,6 +33,10 @@ pile_depile(pile p);
 int 
 pile_valeur(pile p);
 
+/* Renvoie contenue dans la pile à la position  */
+int
+pile_valeur_position(pile p, int position);
+
 /* Nombre d'éléments dans la pile.
  */
 int 

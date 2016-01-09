@@ -2,12 +2,9 @@
 #include <stdlib.h>
 #include "global.h"
 
-/* For terminal color purpose */
-const char* RED_TERM = "\033[31;40m";
-const char* BLACK_TERM = "\033[37;40m";
-
 extern int  yyparse();
 extern FILE *yyin;
+
 FILE *tokenFile;
 FILE *symbolTableFile;
 FILE *parserFile;
@@ -15,6 +12,9 @@ FILE *errorFile;
 
 int main(int argc,char *argv[])
 {
+	RED_TERM = "\033[31;40m";
+	BLACK_TERM = "\033[37;40m";
+		
 	if(argc<6)
 	{
 		printf("More arguments needed. (ex: myAnalyzer.exe input.txt token.txt symbolTable.txt parser.txt error.txt)\n");
@@ -55,8 +55,8 @@ int main(int argc,char *argv[])
 	yyin=inputFile;
 	
 	/* Create symbol table stack and the global symbol table*/
-	pile TSStack = pile_creer(); // Create stack of current symbol table
-	pile allTable = pile_creer(); // Create stack of all symbol table create
+	TSStack = pile_creer(); // Create stack of current symbol table
+	allTable = pile_creer(); // Create stack of all symbol table create
 
 	int globalSymbolTable = crear_tabla();
 	pile_empile(TSStack, globalSymbolTable);
@@ -95,4 +95,20 @@ void writeAndDestroySymbolTable(const pile stack, const char* symbolTableFile){
 		escribir_tabla(tableId,symbolTableFile);
 		destruir_tabla(tableId);
 	}
+}
+
+int existe_entrada_tablas_anteriores(const pile stack, char *lexema){
+	int retour;
+	if(pile_vide(stack)){
+		retour = -1;
+	}else{
+		retour = 0;
+	}
+	int incr;
+	for (incr = 0; incr < pile_taille(stack) ; incr++){
+		if(existe_entrada(pile_valeur_position(stack, incr),lexema) == 0){
+			retour = 1;
+		}
+	}
+	return retour;
 }

@@ -81,6 +81,13 @@ pile_valeur(pile p)
   return p->pile[p->sommet];
 }
 
+int
+pile_valeur_position(pile p, int position)
+{
+  assert(! pile_vide(p));
+  return p->pile[position];
+}
+
 
 int 
 pile_taille(pile p)
