@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "global.h"
 
 extern int  yyparse();
@@ -111,4 +112,13 @@ int existe_entrada_tablas_anteriores(const pile stack, char *lexema){
 		}
 	}
 	return retour;
+}
+
+char* concatStringInt(char* str1, int num){
+	char str2[255];
+	sprintf(str2, "%d", num);
+	char * str3 = (char *) malloc(1 + strlen(str1)+ strlen(str2));
+	strcpy(str3, str1);
+	strcat(str3, str2);
+	return str3;
 }

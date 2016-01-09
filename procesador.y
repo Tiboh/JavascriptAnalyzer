@@ -1,6 +1,5 @@
 %{
 	#include <stdio.h>
-	#include <string.h>
 	#include "global.h"
 	
 	extern int yylineno;
@@ -90,13 +89,16 @@ f:
 		crear_entrada(globalTable,$<p.lexema>3);
 		asignar_tipo_entrada(globalTable, $<p.lexema>3, "funcion");
 		crear_atributo_cadena(globalTable, $<p.lexema>3, "tipo", $<p.tipo>2);
-		
 		int functionTable = crear_tabla();
 		crear_atributo_entero(globalTable, $<p.lexema>3, "idtabla", functionTable);
+			fprintf(stderr," %s HEREE %s\n",RED_TERM, BLACK_TERM);
 
 		pile_empile(TSStack, functionTable);
+					fprintf(stderr," %s HEREE %s\n",RED_TERM, BLACK_TERM);
+
 	} 
 	ABRLLAVE c {
+			fprintf(stderr," %s HEREE %s\n",RED_TERM, BLACK_TERM);
 			/*if(strcmp($<p.tipo>2,$<p.tipo>10)){
 				fprintf(stderr," %sERROR SINTACTICO (Line:%d): tipo de funcion %s y su valor de vuelta no corresponde %s/%s%s\n",RED_TERM, yylineno, $<p.lexema>3, $<p.tipo>2, $<p.tipo>10, BLACK_TERM);
 			}*/
@@ -112,12 +114,8 @@ a:
 		/// TO DO MAKE A FUNCTION WITH THAT CODE
 		int globalTable = pile_valeur(TSStack);
 		contador = 1;
-		char* str1 = "tipoparam";
-		char* str2 = (char *) itoa(contador);
-		char * str3 = (char *) malloc(1 + strlen(str1)+ strlen(str2));
-		strcpy(str3, str1);
-		strcat(str3, str2);
-		crear_atributo_cadena(globalTable, currentID, str3, $<p.lexema>1);
+		char* paramNum = concatStringInt("tipoparam", contador);
+		crear_atributo_cadena(globalTable, currentID, paramNum, $<p.lexema>1);
 	}
 	;
 
@@ -127,12 +125,8 @@ k:
 		/// TO DO MAKE A FUNCTION WITH THAT CODE
 		int globalTable = pile_valeur(TSStack);
 		contador++;
-		char* str1 = "tipoparam";
-		char* str2 = (char *) itoa(contador);
-		char * str3 = (char *) malloc(1 + strlen(str1)+ strlen(str2));
-		strcpy(str3, str1);
-		strcat(str3, str2);
-		crear_atributo_cadena(globalTable, currentID, str3, $<p.lexema>2);
+		char* paramNum = concatStringInt("tipoparam", contador);
+		crear_atributo_cadena(globalTable, currentID, paramNum, $<p.lexema>2);
 	}
 	;
 
