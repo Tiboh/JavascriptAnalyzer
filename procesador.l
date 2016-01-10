@@ -10,6 +10,7 @@
 	extern const char* BLACK_TERM;
 	
 	extern FILE *tokenFile;
+	extern FILE *errorFile;
 %}
 
 ID [A-Za-z][A-Za-z0-9_]*
@@ -87,7 +88,7 @@ bool {ECHO;writeToken("BOOL", yytext, "Palabra reservada");yylval.p.lexema = str
 [ \t\n]+	{ECHO;/* ignorar blancos, tabuladores y saltos de línea */}
 
 . {
-  fprintf(stdout, " %sERROR LÉXICO: Carácter no válido: %s%s\n", RED_TERM, yytext, BLACK_TERM);
+  fprintf(errorFile, " %sERROR LÉXICO: Carácter no válido: %s%s\n", RED_TERM, yytext, BLACK_TERM);
 }
 
 %%

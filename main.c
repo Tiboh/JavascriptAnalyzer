@@ -13,9 +13,9 @@ FILE *errorFile;
 
 int main(int argc,char *argv[])
 {
-	RED_TERM = "\033[31;40m";
-	BLACK_TERM = "\033[37;40m";
-	GREEN_TERM = "\033[32;40m";
+	RED_TERM = "";
+	BLACK_TERM = "";
+	GREEN_TERM = "";
 		
 	if(argc<6)
 	{
@@ -48,7 +48,7 @@ int main(int argc,char *argv[])
 		printf("Couldn't open %s file for writting\n", argv[4]);
 		exit(0);
 	}
-	errorFile=fopen(argv[5],"w");
+	errorFile=fopen(argv[5],"a");
 	if(!tokenFile)
 	{
 		printf("Couldn't open %s file for writting\n", argv[5]);
@@ -62,6 +62,8 @@ int main(int argc,char *argv[])
 
 	int globalSymbolTable = crear_tabla();
 	pile_empile(TSStack, globalSymbolTable);
+	
+	fprintf(parserFile, "Descendente");
 	
 	yyparse();
 	
@@ -84,6 +86,10 @@ int main(int argc,char *argv[])
 
 void writeToken(const char *codigo, const char *attributo, const char* commentario){
 	fprintf(tokenFile, "<%s,%s> // token %s\n", codigo, attributo, commentario);
+}
+
+void writeParser(const int regla){
+	fprintf(parserFile, " %d", regla);
 }
 
 void popAndPushToStacks(const pile stackToPop, const pile stackToPush){
