@@ -1,3 +1,6 @@
+/* TEST 2 : FUNCIONES */
+
+/* TEST DE PARAMETROS Y TIPO DE VUELTO DE FUNCION */
 
 function int Suma ( int a,  int b) /* function with  return one variable, with 2 parameters */
 {
@@ -38,43 +41,4 @@ function int TestRecursif (int a)
 	
 }
 
-/*VARIABLES LOCALES ET GLOBALES */
-var int global1
-global1 = 1
 
-function TestGlobal ( int global1)
-{
-	global1 = 2
-}
-
-function WriteGlobal ()
-{	
-	write(global1)
-}
-
-/* CASOS DE ERRORES */
-
-function int Logico (bool a, bool b) /* function with non valid return type */
-{
-	if (a==true && b==true)
-	return a
-}
-
-function Logico (bool a, bool b) /* this function shouldn't have a return  */
-{
-	if (a==true && b==true)
-	write ("this function shouldn't have a return")
-	return true
-}
-
-
-/*** no se permitten funciones anidadas 
-
-function func1 (int a) 
-{
-	function func2 (int b)
-	{
-		write("can't declare function in an other")
-	}
-}
-***/
