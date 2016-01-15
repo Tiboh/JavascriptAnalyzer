@@ -23,7 +23,7 @@ struct{
 	char* valueChar;
 	char* valueBool;
 	char* tipo;
-	char* vuelta;
+	char* tipovuelta;
 	int assign; /* 1 if assignation, 0 if else  */
 	}p;
 }
@@ -50,7 +50,7 @@ p:
 	;
 
 b:
-	{writeParser(4);} VAR t ID {
+	{writeParser(4);$<p.tipovuelta>$ = "empty";} VAR t ID {
 		if (existe_entrada_tablas_anteriores(TSStack,$<p.lexema>4) == -1) 
 		{
 			int currentTable = pile_valeur(TSStack);
@@ -63,12 +63,12 @@ b:
 			fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Identificador '%s' ya existe %s\n",RED_TERM, yylineno, $<p.lexema>4,BLACK_TERM);
 		}
 	}
-	| {writeParser(5);} IF ABRPAR e { 
+	| {writeParser(5);$<p.tipovuelta>$ = "empty";} IF ABRPAR e { 
 		if(strcmp($<p.tipo>4,"int") && strcmp($<p.tipo>4,"bool")){
 			fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Condicion del IF solo acepta tipo entero o booleano %s\n",RED_TERM, yylineno,BLACK_TERM);
 		}
 	} CERPAR b1
-	| {writeParser(6);} SWITCH ABRPAR ID {
+	| {writeParser(6);$<p.tipovuelta>$ = "empty";} SWITCH ABRPAR ID {
 		int tableID = existe_entrada_tablas_anteriores(TSStack,$<p.lexema>4);
 		if (tableID == -1) 
 		{
@@ -136,7 +136,11 @@ f:
 		}
 	}
 	ABRLLAVE c {
-		if(strcmp($<p.tipo>3, $<p.tipo>11)){
+		if(!strcmp($<p.tipo>3,"empty") && strcmp("empty", $<p.tipovuelta>11)){
+			fprintf(errorFile," %sERROR SINTACTICO (Line:%d): La funcion %s no necesite un RETURN %s\n",RED_TERM, yylineno, $<p.lexema>4, BLACK_TERM);
+		}else if(strcmp($<p.tipo>3,"empty") && !strcmp("empty", $<p.tipovuelta>11)){
+			fprintf(errorFile," %sERROR SINTACTICO (Line:%d): La funcion %s necesite un RETURN de tipo %s %s\n",RED_TERM, yylineno, $<p.lexema>4, $<p.tipo>3, BLACK_TERM);
+		}else if(strcmp($<p.tipo>3, $<p.tipovuelta>11)){
 			fprintf(errorFile," %sERROR SINTACTICO (Line:%d): El RETURN no corresponde al tipo de la funcion %s %s\n",RED_TERM, yylineno, $<p.lexema>4, BLACK_TERM);
 		}
 	} 
@@ -174,8 +178,8 @@ k:
 	;
 
 s:
-	{writeParser(19);} RETURN e {$<p.tipo>$ = $<p.tipo>3;}
-	| {writeParser(20);} WRITE ABRPAR e CERPAR {
+	{writeParser(19);} RETURN e {$<p.tipovuelta>$ = $<p.tipo>3;}
+	| {writeParser(20); $<p.tipovuelta>$ = "empty";} WRITE ABRPAR e CERPAR {
 		if (!strcmp($<p.tipo>4,"int")){
 			fprintf(stdout," %s%d%s\n", GREEN_TERM, $<p.valueInt>4 ,BLACK_TERM);
 		} else if (!strcmp($<p.tipo>4,"chars")){
@@ -184,7 +188,7 @@ s:
 			fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Funcion WRITE solo acepta tipo entero y cadena %s\n",RED_TERM, yylineno,BLACK_TERM);
 		}
 	}
-	| {writeParser(21);} PROMPT ABRPAR ID CERPAR {
+	| {writeParser(21);$<p.tipovuelta>$ = "empty";} PROMPT ABRPAR ID CERPAR {
 		int numTable = existe_entrada_tablas_anteriores(TSStack,$<p.lexema>4);
 		if(numTable == -1) {
 			fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Identificador '%s' no declarado %s\n",RED_TERM, yylineno, $<p.lexema>2,BLACK_TERM);
@@ -216,7 +220,7 @@ s:
 			}
 		}
 	}
-	| {writeParser(18);} ID {
+	| {writeParser(18);$<p.tipovuelta>$ = "empty";} ID {
 		{$<p>$ = $<p>2;}
 		currentID = $<p.lexema>2;
 		int numTable = existe_entrada_tablas_anteriores(TSStack,$<p.lexema>2);
@@ -377,12 +381,12 @@ i:
 	;
 
 c:
-	/* empty */ {writeParser(37); $<p.tipo>$ = "empty";}
+	/* empty */ {writeParser(37); $<p.tipovuelta>$ = "empty";}
 	| {writeParser(36);} b c {
-		if(!strcmp($<p.tipo>3,"empty")){
-			$<p.tipo>$ = $<p.tipo>2;
+		if(!strcmp($<p.tipovuelta>3,"empty")){
+			$<p.tipovuelta>$ = $<p.tipovuelta>2;
 		}else{
-			$<p.tipo>$ = $<p.tipo>3;
+			$<p.tipovuelta>$ = $<p.tipovuelta>3;
 		}
 	}
 	;
