@@ -556,6 +556,9 @@ v:
 						$<p.valueBool>$ = (char*) consultar_valor_atributo_cadena(tableID,$<p.lexema>2,"value");
 					}else{
 					}
+				}else{
+					$<p.tipo>$ = "error";
+					fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Variable '%s' no inicializada %s\n",RED_TERM, yylineno, $<p.lexema>2, BLACK_TERM);
 				}
 			}else if(!strcmp($<p.tipo>3,"incr")){
 				if (!strcmp(consultar_valor_atributo_cadena(tableID, $<p.lexema>2, "tipo"),"int")){
