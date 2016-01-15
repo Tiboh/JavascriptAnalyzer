@@ -73,6 +73,7 @@ int main(int argc,char *argv[])
 	fclose(parserFile);
 	fclose(errorFile);
 	
+	printf("\n\n --------- ERROR FILE -------- \n");
 	readFile(argv[5]); // Read error file
 	
 	popAndPushToStacks(TSStack,allTable); // Pop and push the global table

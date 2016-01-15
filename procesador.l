@@ -88,7 +88,7 @@ bool {ECHO;writeToken("BOOL", yytext, "Palabra reservada");yylval.p.lexema = str
 [ \t\n]+	{ECHO;/* ignorar blancos, tabuladores y saltos de línea */}
 
 . {
-  fprintf(errorFile, " %sERROR LÉXICO: Carácter no válido: %s%s\n", RED_TERM, yytext, BLACK_TERM);
+  fprintf(errorFile, " %sERROR LEXICO: Caracter no valido: %s%s\n", RED_TERM, yytext, BLACK_TERM);
 }
 
 %%

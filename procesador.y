@@ -11,7 +11,7 @@
 	char* params[50];
 
 	void yyerror (char const *s) {
-	   fprintf (errorFile,  " %sERROR SINTÁCTICO: (Line:%d) %s%s\n" , RED_TERM, yylineno, s, BLACK_TERM);
+	   fprintf (errorFile,  " %sERROR SINTACTICO: (Line:%d) %s%s\n" , RED_TERM, yylineno, s, BLACK_TERM);
 	}
 %}
 
