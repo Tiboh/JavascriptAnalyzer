@@ -33,9 +33,9 @@ function int TestRecursif (int a)
 {	
 	a = 5
 	if (a==5) {
-			return a + TestRecursif (a + 1)
+			return a
 			}
-	return a
+	
 }
 
 /*VARIABLES LOCALES ET GLOBALES */

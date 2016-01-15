@@ -8,80 +8,80 @@ Axioma = P
 
 Producciones = {
 
-P -> B P
-P -> F P	
+P -> B P 	////declaraciones y sentencias compuestas
+P -> F P 	//// funciones	
 P -> lambda
 
-B -> var T id						
-B -> if abrPar E cerPar B1 				
-B -> switch abrPar id cerPar abrLlave G cerLlave
-B -> S
+B -> var T id	//// declaracion de variable id de tipo T						
+B -> if abrPar E cerPar B1 	////B1 permite anidados if				
+B -> switch abrPar id cerPar abrLlave G cerLlave	////G no permite anidados switch
+B -> S	//// sentencia
 
-B1 -> B
+B1 -> B	
 B1 -> abrLlave C cerLlave
 
-F -> function H id abrPar A cerPar abrLlave C cerLlave
+F -> function H id abrPar A cerPar abrLlave C cerLlave	//// declaracion funciones con tipo return H,  identificador id, lista de parametros A y cuerpo C
 
-T -> int
-T -> bool
-T -> chars
+T -> int	//// tipo entero
+T -> bool	//// tipo boolean
+T -> chars	//// tipo cadena
 
-A -> T id K	
-A -> lambda
+A -> T id K	//// parametros de una funcion	
+A -> lambda //// parametros vacios
 
-K -> coma T id K 
-K -> lambda
+K -> coma T id K //// mas de un parametro de una funcion con seperador coma
+K -> lambda //// solo un parametro de funcion
 
-S -> id S2 		
-S -> return E
-S -> write abrPar E cerPar
-S -> prompt abrPar id cerPar
+S -> id S2 		//// identificador seguida de operaciones
+S -> return E	//// token "return" seguido de una expresión
+S -> write abrPar L cerPar	//// write para imprimir L que es una lista de parametros 
+S -> prompt abrPar id cerPar	//// prompt para recuperar una valor en consola
 
-S2 -> opAs E	
-S2 -> abrPar L cerPar	
-S2 -> opAsSuma E
-S2 -> opIncr
+S2 -> opAs E	//// operador de asignacion "=" seguido de expresión
+S2 -> abrPar L cerPar	//// paréntesis abierto "(" seguido de una lista de parametros y paréntesis cerrada ")"
+S2 -> opAsSuma E //// operador de suma y asignacion "+=" seguido de expresión
+S2 -> opIncr 	//// operador de incrementacion "++"
 
-G -> case E doblePuntos G1
-G -> default doblePuntos G2
+G -> case E doblePuntos G1	//// token "case" seguido de expresión, de simbolo ":" y G1 que permite un case o default despues
+G -> default doblePuntos G2	//// token "default" seguido de simbolo ":" y G2 que no permite un case despues un default
 
-G1 -> B J I 
-G1 -> I
+G1 -> B J I //// cuerpo dentro un case, possibilidad de otros case seguidos
+G1 -> I	//// cuerpo vacio de case, possibilidad de otros case seguidos
 
-G2 -> B 
-G2 -> lambda
+G2 -> B 	//// cuerpo dentro un default
+G2 -> lambda	//// cuerpo vacio dentro un default
 
-J -> break
-J -> lambda
+J -> break //// break en el fin del cuerpo de case
+J -> lambda //// break es optional
 
-I -> G
+I -> G //// possibilidad de otros case seguidos
 I -> lambda
 
-C -> B C 	
+C -> B C 	//// uno o más instrucion B
 C -> lambda
 
-H -> T		
+H -> T	//// tipo de declaracion de una funcion, puede ser un tipo o vacio	
 H -> lambda
 
-L -> E Q	
-L -> lambda
+L -> E Q	//// lista de parametros de una funcion
+L -> lambda //// lista vacia de parametros de funcion
 
-Q -> coma E Q	
+Q -> coma E Q	//// mas de un parametro de una funcion
 Q -> lambda	
 
-E -> R E1
+E -> R E1 
 
-E1 -> opLogCon R E1
+E1 -> opLogCon R E1 //// opLogcon es el operador logico "&&"
 E1 -> lambda
 
 R -> U R1
 
-R1 -> opRelIgual U R1
+R1 -> opRelIgual U R1 //// opRelIgual es el operador relational "=="
 R1 -> lambda
 
 U -> V U1
 
-U1 -> opArSuma V U1
+U1 -> opArSuma V U1	//// opArSuma es el operador aritmetico "+"
 U1 -> lambda
 
 V -> id V1
@@ -92,6 +92,6 @@ V -> logico
 
 V1 -> lambda
 V1 -> abrPar L cerPar
-V1 -> opIncr 
+V1 -> opIncr //// opIncr es el operador de incrementacion "++"
 
 }
