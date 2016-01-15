@@ -63,7 +63,7 @@ b:
 			fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Identificador '%s' ya existe %s\n",RED_TERM, yylineno, $<p.lexema>4,BLACK_TERM);
 		}
 	}
-	| {writeParser(5);$<p.tipovuelta>$ = "empty";} IF ABRPAR e { 
+	| {writeParser(5);$<p.tipovuelta>$ = "empty";} IF ABRPAR e {
 		if(strcmp($<p.tipo>4,"int") && strcmp($<p.tipo>4,"bool")){
 			fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Condicion del IF solo acepta tipo entero o booleano %s\n",RED_TERM, yylineno,BLACK_TERM);
 		}
@@ -75,9 +75,7 @@ b:
 			fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Identificador '%s' no declarado %s\n",RED_TERM, yylineno, $<p.lexema>4,BLACK_TERM);
 			$<p.tipo>$ = "error";
 		}else{
-			if (existe_atributo(tableID,$<p.lexema>4,"value") != 0){
-				fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Variable '%s' no inicializada %s\n",RED_TERM, yylineno, $<p.lexema>4, BLACK_TERM);
-			}
+
 		}
 	} CERPAR ABRLLAVE g 
 	{
@@ -107,11 +105,16 @@ t:
 
 f:
 	{writeParser(10);} FUNCTION h ID {
-		currentID = $<p.lexema>4; 
-		int globalTable = pile_valeur(TSStack);
-		crear_entrada(globalTable,$<p.lexema>4);
-		asignar_tipo_entrada(globalTable, $<p.lexema>4, "funcion");
-		crear_atributo_cadena(globalTable, $<p.lexema>4, "tipo", $<p.tipo>3);
+		if (existe_entrada_tablas_anteriores(TSStack,$<p.lexema>4) == -1) 
+		{
+			currentID = $<p.lexema>4;
+			int globalTable = pile_valeur(TSStack);
+			crear_entrada(globalTable,$<p.lexema>4);
+			asignar_tipo_entrada(globalTable, $<p.lexema>4, "funcion");
+			crear_atributo_cadena(globalTable, $<p.lexema>4, "tipo", $<p.tipo>3);
+		} else {
+			fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Identificador '%s' ya existe %s\n",RED_TERM, yylineno, $<p.lexema>4,BLACK_TERM);
+		}
 	}
 	ABRPAR a CERPAR {
 		int functionTable = crear_tabla();
@@ -180,10 +183,7 @@ k:
 s:
 	{writeParser(19);} RETURN e {$<p.tipovuelta>$ = $<p.tipo>3;}
 	| {writeParser(20); $<p.tipovuelta>$ = "empty";} WRITE ABRPAR e CERPAR {
-		if (!strcmp($<p.tipo>4,"int")){
-			fprintf(stdout," %s%d%s\n", GREEN_TERM, $<p.valueInt>4 ,BLACK_TERM);
-		} else if (!strcmp($<p.tipo>4,"chars")){
-			fprintf(stdout," %s%s%s\n", GREEN_TERM, $<p.valueChar>4,BLACK_TERM);
+		if (!strcmp($<p.tipo>4,"int") || !strcmp($<p.tipo>4,"chars")){
 		} else{
 			fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Funcion WRITE solo acepta tipo entero y cadena %s\n",RED_TERM, yylineno,BLACK_TERM);
 		}
@@ -194,27 +194,7 @@ s:
 			fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Identificador '%s' no declarado %s\n",RED_TERM, yylineno, $<p.lexema>2,BLACK_TERM);
 		}else{
 			char* tipoID = (char*) consultar_valor_atributo_cadena(numTable,$<p.lexema>4,"tipo");
-			if (!strcmp(tipoID,"int")){
-				int myvariable;
-				printf(" Escribir valor de '%s' (entero): ",$<p.lexema>4);
-				scanf("%d", &myvariable);
-				if (existe_atributo(numTable,$<p.lexema>4,"value") == 0){ // exists
-						asignar_valor_atributo_entero(numTable,$<p.lexema>4,"value",myvariable);
-				}
-				else {
-					crear_atributo_entero(numTable,$<p.lexema>4,"value",myvariable);
-				}
-			}
-			else if (!strcmp(tipoID,"chars")){
-				char string[256];
-				printf(" Escribir valor de '%s' (cadena): ",$<p.lexema>4);
-				scanf("%s", &string);
-				if (existe_atributo(numTable,$<p.lexema>4,"value") == 0){ // exists
-						asignar_valor_atributo_cadena(numTable,$<p.lexema>4,"value",string);
-				}
-				else {
-					crear_atributo_cadena(numTable,$<p.lexema>4,"value",string);
-				}			
+			if (!strcmp(tipoID,"int") || !strcmp(tipoID,"chars")){
 			}else{
 				fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Funcion PROMPT solo acepta tipo entero y cadena %s\n",RED_TERM, yylineno,BLACK_TERM);
 			}
@@ -226,7 +206,6 @@ s:
 		int numTable = existe_entrada_tablas_anteriores(TSStack,$<p.lexema>2);
 		if(numTable == -1) {
 			fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Identificador '%s' no declarado %s\n",RED_TERM, yylineno, $<p.lexema>2,BLACK_TERM);
-			// exit(-1);	
 		}
 		nbParam = 0;
 	}
@@ -235,30 +214,6 @@ s:
 		if($<p.assign>4){ // if it's an assignation
 		char* tipoID = (char*) consultar_valor_atributo_cadena(numTable,$<p.lexema>2,"tipo");
 			if(!strcmp($<p.tipo>4,tipoID)){
-				if (!strcmp($<p.tipo>4,"int")){
-					if (existe_atributo(numTable,$<p.lexema>2,"value") == 0){ // exists
-						asignar_valor_atributo_entero(numTable,$<p.lexema>2,"value",$<p.valueInt>4);
-					}
-					else {
-						crear_atributo_entero(numTable,$<p.lexema>2,"value",$<p.valueInt>4);
-					}
-				}
-				else if (!strcmp($<p.tipo>4,"chars")){
-					if (existe_atributo(numTable,$<p.lexema>2,"value") == 0){ // exists
-						asignar_valor_atributo_cadena(numTable,$<p.lexema>2,"value",$<p.valueChar>4);
-					}
-					else {
-						crear_atributo_cadena(numTable,$<p.lexema>2,"value",$<p.valueChar>4);
-					}
-				}
-				else if (!strcmp($<p.tipo>4,"bool")){
-					if (existe_atributo(numTable,$<p.lexema>2,"value") == 0){ // exists
-						asignar_valor_atributo_cadena(numTable,$<p.lexema>2,"value",$<p.valueBool>4);
-					}
-					else {
-						crear_atributo_cadena(numTable,$<p.lexema>2,"value",$<p.valueBool>4);
-					}
-				}
 			}else{
 				fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Variable '%s' solo acepta tipo '%s' %s\n",RED_TERM, yylineno, $<p.lexema>2, tipoID, BLACK_TERM);
 			}
@@ -284,15 +239,12 @@ s2:
 		$<p.assign>$ = 1;
 		if (!strcmp($<p.tipo>3,"int")){
 			$<p.tipo>$ = $<p.tipo>3;
-			$<p.valueInt>$ = $<p.valueInt>3;
 		}
 		else if (!strcmp($<p.tipo>3,"chars")){
 			$<p.tipo>$ = $<p.tipo>3;
-			$<p.valueChar>$ = $<p.valueChar>3;
 		}	
 		else if (!strcmp($<p.tipo>3,"bool")){
 			$<p.tipo>$ = $<p.tipo>3;
-			$<p.valueBool>$ = $<p.valueBool>3;
 		}	
 		else{
 			$<p.tipo>$ = "error";
@@ -309,7 +261,6 @@ s2:
 		$<p.assign>$ = 1;
 		if (!strcmp($<p.tipo>3,"int")){
 			$<p.tipo>$ = $<p.tipo>3;
-			$<p.valueInt>$ += $<p.valueInt>3;
 		}
 		else {
 			fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Variables deben ser de tipo entero %s\n",RED_TERM, yylineno,BLACK_TERM);
@@ -319,16 +270,10 @@ s2:
 		$<p.assign>$ = 1;
 		int tableID = existe_entrada_tablas_anteriores(TSStack,currentID);
 		if (!strcmp(consultar_valor_atributo_cadena(tableID, currentID, "tipo"),"int")){
-			if (existe_atributo(tableID,currentID,"value") == 0){ // exists
-				int idValue = consultar_valor_atributo_entero(tableID, currentID, "value");
-				$<p.valueInt>$ = idValue++;
-				$<p.tipo>$ = "int";
-			}
-			else {
-				fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Variable '%s' no inicializada %s\n",RED_TERM, yylineno, currentID, BLACK_TERM);
-			}
+			$<p.tipo>$ = "int";
 		}
 		else {
+			$<p.tipo>$ = "error";
 			fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Variable '%s' deben ser de tipo entero %s\n",RED_TERM, yylineno, currentID, BLACK_TERM);
 		}	
 	}
@@ -410,16 +355,9 @@ e:
 	{writeParser(44);} r e1 {
 		if(!strcmp($<p.tipo>3,"empty")){
 			$<p.tipo>$ = $<p.tipo>2;
-			if(strcmp($<p.tipo>2,"error")){
-				if(!strcmp($<p.tipo>2,"int")) $<p.valueInt>$ = $<p.valueInt>2;
-				else if(!strcmp($<p.tipo>2,"chars")) $<p.valueChar>$ = $<p.valueChar>2;
-				else if(!strcmp($<p.tipo>2,"bool")) $<p.valueBool>$ = $<p.valueBool>2;
-			}
 		}else{
 			if(!strcmp($<p.tipo>2,$<p.tipo>3) && strcmp($<p.tipo>3,"error")){
 				$<p.tipo>$ = $<p.tipo>3;
-				if(!strcmp($<p.valueBool>2,"true") && !strcmp("true",$<p.valueBool>3)) $<p.valueBool>$ = "true";
-				else $<p.valueBool>$ = "false";
 			}else{
 				$<p.tipo>$ = "error";
 			}
@@ -432,12 +370,6 @@ e1:
 	| {writeParser(45);} OPLOGCON r e1 {
 		if((!strcmp($<p.tipo>4,$<p.tipo>3) || !strcmp($<p.tipo>4,"empty")) && !strcmp($<p.tipo>3,"bool")){
 			$<p.tipo>$ = "bool";
-			if(!strcmp($<p.tipo>4,"empty")){
-					$<p.valueBool>$ = $<p.valueBool>3;
-			}else{
-				if(!strcmp($<p.valueBool>3,"true") && !strcmp("true",$<p.valueBool>4)) $<p.valueBool>$ = "true";
-				else $<p.valueBool>$ = "false";
-			}
 		}else{
 			$<p.tipo>$ = "error";
 			fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Solo acepta tipo booleano %s\n",RED_TERM, yylineno, BLACK_TERM);
@@ -449,16 +381,9 @@ r:
 	{writeParser(47);} u r1 {
 		if(!strcmp($<p.tipo>3,"empty")){
 			$<p.tipo>$ = $<p.tipo>2;
-			if(strcmp($<p.tipo>2,"error")){
-				if(!strcmp($<p.tipo>2,"int")) $<p.valueInt>$ = $<p.valueInt>2;
-				else if(!strcmp($<p.tipo>2,"chars")) $<p.valueChar>$ = $<p.valueChar>2;
-				else if(!strcmp($<p.tipo>2,"bool")) $<p.valueBool>$ = $<p.valueBool>2;
-			}
 		}else{
 			if(!strcmp($<p.tipo>2,$<p.tipo>3) && strcmp($<p.tipo>3,"error")){
-				$<p.tipo>$ = $<p.tipo>3;
-				if(!strcmp($<p.valueBool>2,$<p.valueBool>3)) $<p.valueBool>$ = "true";
-				else $<p.valueBool>$ = "false";
+				$<p.tipo>$ = "bool";
 			}else{
 				$<p.tipo>$ = "error";
 			}
@@ -468,28 +393,12 @@ r:
 
 r1:
 	/* empty */ {writeParser(49); $<p.tipo>$ = "empty";}
-	| {writeParser(48);} OPRELIGUAL u r1 { 
+	| {writeParser(48);} OPRELIGUAL u r1 {
 		if(!strcmp($<p.tipo>4,$<p.tipo>3) || !strcmp($<p.tipo>4,"empty")){
 			if(!strcmp($<p.tipo>3,"int")){
-				$<p.tipo>$ = "bool";
-				if(!strcmp($<p.tipo>4,"empty")){
-					if($<p.valueInt>3 != 0) $<p.valueBool>$ = "true";
-					else $<p.valueBool>$ = "false";
-				}else{
-					char* myR1;
-					if($<p.valueInt>3 != 0) myR1 = "true";
-					else myR1 = "false";
-					if(!strcmp(myR1,$<p.valueBool>4)) $<p.valueBool>$ = "true";
-					else $<p.valueBool>$ = "false";
-				}
+				$<p.tipo>$ = "int";
 			}else if(!strcmp($<p.tipo>3,"bool")){
 				$<p.tipo>$ = "bool";
-				if(!strcmp($<p.tipo>4,"empty")){
-					$<p.valueBool>$ = $<p.valueBool>3;
-				}else{
-					if(!strcmp($<p.valueBool>3,$<p.valueBool>4)) $<p.valueBool>$ = "true";
-					else $<p.valueBool>$ = "false";
-				}
 			}else{
 				$<p.tipo>$ = "error";
 				fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Operator '==' solo acepta tipo entero o booleano %s\n",RED_TERM, yylineno, BLACK_TERM);
@@ -505,15 +414,9 @@ u:
 	{writeParser(50);} v u1 {
 		if(!strcmp($<p.tipo>3,"empty")){
 			$<p.tipo>$ = $<p.tipo>2;
-			if(strcmp($<p.tipo>2,"error")){
-				if(!strcmp($<p.tipo>2,"int")) $<p.valueInt>$ = $<p.valueInt>2;
-				else if(!strcmp($<p.tipo>2,"chars")) $<p.valueChar>$ = $<p.valueChar>2;
-				else if(!strcmp($<p.tipo>2,"bool")) $<p.valueBool>$ = $<p.valueBool>2;
-			}
 		}else{
 			if(!strcmp($<p.tipo>2,$<p.tipo>3) && strcmp($<p.tipo>3,"error")){
 				$<p.tipo>$ = $<p.tipo>3;
-				$<p.valueInt>$ = $<p.valueInt>2 + $<p.valueInt>3;
 			}else{
 				$<p.tipo>$ = "error";
 			}
@@ -526,10 +429,8 @@ u1:
 	| {writeParser(51);} OPARSUMA v u1 { 
 		if(!strcmp($<p.tipo>4,$<p.tipo>3) && !strcmp($<p.tipo>3,"int")){
 			$<p.tipo>$ = "int";
-			$<p.valueInt>$ = $<p.valueInt>3 + $<p.valueInt>4;
 		}else if(!strcmp($<p.tipo>4,"empty") && !strcmp($<p.tipo>3,"int")){
 			$<p.tipo>$ = "int";
-			$<p.valueInt>$ = $<p.valueInt>3;
 		}else{
 			$<p.tipo>$ = "error";
 			fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Operator '+' solo acepta tipo entero %s\n",RED_TERM, yylineno, BLACK_TERM);
@@ -548,62 +449,23 @@ v:
 		}else{
 			char* tipo = (char*) consultar_valor_atributo_cadena(tableID,$<p.lexema>2,"tipo");
 			$<p.tipo>$ = tipo;
-			if(!strcmp($<p.tipo>3, "empty")){
-				if (existe_atributo(tableID,$<p.lexema>2,"value") == 0){ // exists
-					if (!strcmp(tipo,"int")){
-						$<p.valueInt>$ = consultar_valor_atributo_entero(tableID,$<p.lexema>2,"value");
-					}
-					else if (!strcmp(tipo,"chars")){
-						$<p.valueChar>$ = (char*) consultar_valor_atributo_cadena(tableID,$<p.lexema>2,"value");
-					}	
-					else if (!strcmp(tipo,"bool")){
-						$<p.valueBool>$ = (char*) consultar_valor_atributo_cadena(tableID,$<p.lexema>2,"value");
-					}else{
-					}
-				}else{
-					$<p.tipo>$ = "error";
-					fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Variable '%s' no inicializada %s\n",RED_TERM, yylineno, $<p.lexema>2, BLACK_TERM);
-				}
-			}else if(!strcmp($<p.tipo>3,"incr")){
+			if(!strcmp($<p.tipo>3,"incr")){
 				if (!strcmp(consultar_valor_atributo_cadena(tableID, $<p.lexema>2, "tipo"),"int")){
-					if (existe_atributo(tableID,$<p.lexema>2,"value") == 0){ // exists
-						int idValue = consultar_valor_atributo_entero(tableID, $<p.lexema>2, "value");
-						idValue++;
-						asignar_valor_atributo_entero(tableID, $<p.lexema>2,"value", idValue);
 						$<p.tipo>$ = "int"; 
-						$<p.valueInt>$ = idValue;
-					}
-					else {
-						fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Variable '%s' no inicializada %s\n",RED_TERM, yylineno, $<p.lexema>2, BLACK_TERM);
-					}
-				}
-				else {
+				} else {
 					fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Variable '%s' deben ser de tipo entero %s\n",RED_TERM, yylineno, $<p.lexema>2, BLACK_TERM);
 				}	
 			}else{ // Function
-				if (!strcmp(tipo,"int")){
-					$<p.valueInt>$ = $<p.valueInt>3;
-				}
-				else if (!strcmp(tipo,"chars")){
-					$<p.valueChar>$ = $<p.valueChar>3;
-				}	
-				else if (!strcmp(tipo,"bool")){
-					$<p.valueBool>$ = $<p.valueBool>3;
-				}
+
 			}
 		}
 	}
 	| {writeParser(54);} ABRPAR e CERPAR {
 		$<p.tipo>$ = $<p.tipo>3;
-		if(strcmp($<p.tipo>2,"error")){
-			if(!strcmp($<p.tipo>3,"int")) $<p.valueInt>$ = $<p.valueInt>3;
-			else if(!strcmp($<p.tipo>3,"chars")) $<p.valueChar>$ = $<p.valueChar>3;
-			else if(!strcmp($<p.tipo>3,"bool")) $<p.valueBool>$ = $<p.valueBool>3;
-		} 
 	}
-	| {writeParser(55);} ENTERO { $<p.tipo>$ = "int"; $<p.valueInt>$ = $<p.valueInt>2;}
-	| {writeParser(56);} CADENA { $<p.tipo>$ = "chars"; $<p.valueChar>$ = $<p.valueChar>2;}
-	| {writeParser(57);} LOGICO { $<p.tipo>$ = "bool"; $<p.valueBool>$ = $<p.valueBool>2;}
+	| {writeParser(55);} ENTERO { $<p.tipo>$ = "int"; }
+	| {writeParser(56);} CADENA { $<p.tipo>$ = "chars";}
+	| {writeParser(57);} LOGICO { $<p.tipo>$ = "bool";}
 	;
 
 v1:
