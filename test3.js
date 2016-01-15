@@ -1,41 +1,51 @@
-/*** fs 
+/* TEST 3 : SENTENCIAS */
 
-zef 
-sef
-**/
-/*a*/
-/**/
-/*test commentaire */
+/* SENTENCIA CONDITIONAL SIMPLE "IF" */
 
+
+
+
+
+
+/* SENTENCIA SELECCION MULTIPLE "SWITCH-CASE" */
+
+function Imprime (chars a)  
+{
+	write(a)
+}
 var int a 
 var bool test
+
 switch (num)
 {
-	case 1: write("lunes") break /* break in the same line */
+	/*** case con break en la misma linea */
+	case 1: write("lunes") break 
+	
+	/*** case con break en un otra linea */
 	case 2: write("martes")
-			break	/* break in other line*/
-	case 3: write("miércoles")/* without break */
-	case 4:  write ("El dia numero ", num, " es Jueves .\n")  /* write with parameters*/
+			break	
+			
+	/*** case sin break */		
+	case 3: write("miercoles")
 	
-	case 8: if (a == 0) /*if without instructions */
-		{ 					
+	/*** case con sentencia conditional simple if break */
+	case 4: if (test == true) 
+		{ 	write("Jueves")				
 		}
+	/*** case con llamada funcion ***/
+	case 5 : Imprime("Viernes")
 	
-	case 9: if (test == true ) /*if with bool parameter */
-		{ 			
-			write ("case 9 ")
-		}
 	
-	default: /* default is optional */
-		if (num == 0 )/* if with instructions */
+	/* DEFAULT IS OPTIONAL */
+	/*** default ***/
+	default: 
+		if (test == true )
 		{ 
-			For = FactorialFor (num)
-			While = FactorialWhile ()
-			Do = FactorialDo (num)
-			imprime (cadena (false), "recursivo es: ", FactorialRecursivo (num))
-			imprime (s, "con do-while es: ", Do)
-			imprime (s, "con while es: ", While)
-			imprime (cadena (false), "con for es: ", For)		
+			Imprime("Sabado")	
+		}
+		if (test == false )
+		{ 
+			write("Domingo")	
 		}
 }
 

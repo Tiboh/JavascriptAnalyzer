@@ -1,34 +1,91 @@
 /* TEST 2 : FUNCIONES */
 
-/* TEST DE PARAMETROS Y TIPO DE VUELTO DE FUNCION */
+/* TEST INPUT OUTPUT TERMINAL */
 
-function int Suma ( int a,  int b) /* function with  return one variable, with 2 parameters */
+function TestTerminal () 
+{
+	var int test
+	prompt(test)
+	write(test)
+}
+
+/* TEST DE PARAMETROS DE FUNCION */
+
+/** sin parametro **/
+function Nothing () 
+{
+	write("test function without parameters")
+}
+
+/** con un parametro **/
+function Imprime (int a)  
+{
+	write(a)
+}
+
+/** con dos parametros **/
+function int Suma ( int a,  int b)  
 {
 	var int c
 	c = a + b
 	return c
 }
 
-function int Suma2 (int a, int b) /* operation in return */
+/** con parametros de tipos distintos **/
+function int TestTiposDistintos (int a, bool b, chars c) 
+{
+	if (b==true)
+	{
+		write(c)
+		return a
+	}	
+}
+
+/* TEST DE TIPO DE VUELTA DE FUNCION */
+
+/** sin return**/
+function int TestWithoutReturn(int a, int b) 
+{	
+	var int c
+	c = a + b
+}
+
+/** return variable **/
+function int TestReturnVariable (int a, int b) 
+{
+	return a
+}
+
+/** return expresion **/
+function int Suma2 (int a, int b) 
 {
 	return a + b
 }
 
-function Imprime (int a)  /* function without return and with one parameter */
+/** return vacio **/
+function int TestReturnVariableNothing (int a) 
 {
-	write(a)
+	return 
 }
 
-function int Nothing () /* function without parameters */
+
+/* TEST LLAMADA DE FUNCION */
+
+function Main()
 {
-	write("test function without parameters")
+	var int variable1
+	var int variable2
+	var int variable3
+	var int variable4
+	
+	variable1 = 10
+	variable2 = 20
+	
+	variable3 = Suma(variable1,variable2)
+	variable4 = Suma2(variable1,variable3)
+	Imprime(variable4)
 }
 
-function bool Logico (bool a, bool b) /* parametro logico */
-{
-	if (a==true && b==true)
-	return true
-}
 
 /* RECURSIVIDAD */
 

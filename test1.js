@@ -3,6 +3,8 @@
 
 /* TEST DE VARIABLES GLOBALES Y LOCALES */
 
+var int global1
+global1 = 1000
 var int a
 a = 1
 
@@ -11,6 +13,7 @@ function int TestGlobal ( int a)
 	a = 2
 	write ("La volor de 'a' local es = ")
 	write (a)
+	write (global1 + a)
 	return a
 }
 
