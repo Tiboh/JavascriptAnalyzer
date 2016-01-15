@@ -13,10 +13,10 @@ FILE *errorFile;
 
 int main(int argc,char *argv[])
 {
-	RED_TERM = "";
-	BLACK_TERM = "";
-	GREEN_TERM = "";
-		
+	RED_TERM = "\033[31m";
+	BLACK_TERM = "\033[39m";
+	GREEN_TERM = "\033[32m";
+			
 	if(argc<6)
 	{
 		printf("More arguments needed. (ex: myAnalyzer.exe input.txt token.txt symbolTable.txt parser.txt error.txt)\n");
@@ -48,7 +48,7 @@ int main(int argc,char *argv[])
 		printf("Couldn't open %s file for writting\n", argv[4]);
 		exit(0);
 	}
-	errorFile=fopen(argv[5],"a");
+	errorFile=fopen(argv[5],"w");
 	if(!tokenFile)
 	{
 		printf("Couldn't open %s file for writting\n", argv[5]);
@@ -66,12 +66,14 @@ int main(int argc,char *argv[])
 	fprintf(parserFile, "Descendente");
 	
 	yyparse();
-	
+		
 	fclose(inputFile);
 	fclose(tokenFile);
 	fclose(symbolTableFile);
 	fclose(parserFile);
 	fclose(errorFile);
+	
+	readFile(argv[5]); // Read error file
 	
 	popAndPushToStacks(TSStack,allTable); // Pop and push the global table
 	
@@ -124,4 +126,18 @@ char* concatStringInt(char* str1, int num){
 	strcpy(str3, str1);
 	strcat(str3, str2);
 	return str3;
+}
+
+void readFile(char* filePath){
+	int MAX_LINE_LEN  = 1024;
+	char lineIn[MAX_LINE_LEN];
+	FILE *fp;
+	if ((fp = fopen(filePath,"r")) != NULL) {
+	  while (fgets(lineIn,MAX_LINE_LEN,fp) != NULL) {
+		printf("%s",lineIn); 
+	  } 
+	  fclose(fp); 
+	} else { 
+	  fprintf(stderr,"%s not found.\n",filePath); 
+	} 
 }

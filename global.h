@@ -14,3 +14,4 @@ void writeParser(const int regla);
 void writeAndDestroySymbolTable(const pile stack, const char* symbolTableFile);
 int existe_entrada_tablas_anteriores(const pile stack, char *lexema);
 char* concatStringInt(char* str1, int num);
+void readFile(char* filePath);
