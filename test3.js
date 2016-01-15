@@ -15,6 +15,7 @@ function Imprime (chars a)
 }
 var int a 
 var bool test
+test = true 
 
 switch (num)
 {
