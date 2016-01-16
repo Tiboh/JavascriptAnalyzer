@@ -85,10 +85,7 @@ function Main()
 
 function int TestRecursif (int a)
 {	
-	a = 5
-	if (a==5) {
-			return a
-			}
+	write(a)
 	TestRecursif(a+1)		
 	return a
 }

@@ -47,9 +47,7 @@ function Main ()
 		/*** case con llamada funcion ***/
 		case 5 : 
 				Imprime(num)
-				write ("Viernes")
-		
-		
+
 		/* DEFAULT IS OPTIONAL */
 		/*** default ***/
 		default: 
