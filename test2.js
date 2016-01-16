@@ -1,14 +1,5 @@
 /* PRUEBA 2 : FUNCIONES */
 
-/* PRUEBA INPUT OUTPUT TERMINAL */
-
-	function TestTerminal () 
-	{
-		var int test
-		prompt(test)
-		write(test)
-	}
-
 /* PRUEBA DE PARAMETROS DE FUNCION */
 
 	/** sin parametro **/

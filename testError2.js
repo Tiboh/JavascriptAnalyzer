@@ -10,7 +10,7 @@
 			{
 				write(a)
 			}	
-
+	
 /* CASOS DE ERROR TIPO DE VUELTA DE FUNCION */
 	
 	/** Tipo de vuelta incorrecto **/
@@ -49,4 +49,15 @@
 		
 	/** Llamada de funcion no declarada **/
 		Func2(c)
-		 
+
+/* FUNCIONES ANIDADAS */
+
+			/** no se permitten funciones anidadas **/
+
+		function Ani1 (int a) 
+		{
+			function An2 (int b)
+			{
+				write("can't declare function in an other")
+			}
+		}
