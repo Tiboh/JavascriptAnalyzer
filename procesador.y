@@ -24,7 +24,6 @@ struct{
 	char* valueBool;
 	char* tipo;
 	char* tipovuelta;
-	int assign; /* 1 if assignation, 0 if else  */
 	}p;
 }
 
@@ -80,11 +79,12 @@ b:
 	} CERPAR ABRLLAVE g 
 	{
 		int currentTableID = pile_valeur(TSStack);
-		if(strcmp("error", "error")){
-			char* idTipo = (char*) consultar_valor_atributo_cadena(currentTableID,$<p.lexema>4,"tipo");
-			if(!strcmp(idTipo,$<p.tipo>8) && strcmp($<p.tipo>8,"error")){
-			}else{
-				fprintf(errorFile," %sERROR SINTACTICO (Line:%d): El SWITCH y el CASE no tienen mismo tipo %s\n",RED_TERM, yylineno, BLACK_TERM);
+		if(strcmp($<p.tipo>8, "error")){
+			if(existe_entrada_tablas_anteriores(TSStack,$<p.lexema>4) != -1){
+				char* idTipo = (char*) consultar_valor_atributo_cadena(currentTableID,$<p.lexema>4,"tipo");
+				if(strcmp(idTipo,$<p.tipo>8)){
+					fprintf(errorFile," %sERROR SINTACTICO (Line:%d): El SWITCH y el CASE no tienen mismo tipo %s\n",RED_TERM, yylineno, BLACK_TERM);
+				}
 			}
 		}
 	}
@@ -209,15 +209,15 @@ s:
 		}
 		nbParam = 0;
 	}
-	s2 {			
+	s2 {	
 		int numTable = existe_entrada_tablas_anteriores(TSStack,$<p.lexema>2);
-		if($<p.assign>4){ // if it's an assignation
+		if(!strcmp($<p.tipo>4, "int") || !strcmp($<p.tipo>4, "bool") || !strcmp($<p.tipo>4, "chars")){ // if it's an assignation
 		char* tipoID = (char*) consultar_valor_atributo_cadena(numTable,$<p.lexema>2,"tipo");
 			if(!strcmp($<p.tipo>4,tipoID)){
 			}else{
 				fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Variable '%s' solo acepta tipo '%s' %s\n",RED_TERM, yylineno, $<p.lexema>2, tipoID, BLACK_TERM);
 			}
-		} else { //if not assignation, it's function
+		} else if(!strcmp($<p.tipo>4, "funcion")){ // it's function
 			int parametros = consultar_valor_atributo_entero(numTable,$<p.lexema>2,"parametros");
 			if(parametros != nbParam){
 				fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Se falta %d parametros en el llamamiento de la funcion %s %s\n",RED_TERM, yylineno, parametros-nbParam, $<p.lexema>2, BLACK_TERM);
@@ -230,13 +230,14 @@ s:
 					fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Parametro %d en el llamamiento de la funcion %s debe ser de tipo %s %s\n",RED_TERM, yylineno, i+1, $<p.lexema>2, tipoParam, BLACK_TERM);
 				}
 			}
+		}else{
+			
 		}
 	}
 	;
 
 s2:
 	{writeParser(22);} OPAS e { 
-		$<p.assign>$ = 1;
 		if (!strcmp($<p.tipo>3,"int")){
 			$<p.tipo>$ = $<p.tipo>3;
 		}
@@ -252,13 +253,8 @@ s2:
 		}
 		
 	}
-	| {writeParser(23);} ABRPAR {
-		$<p.assign>$ = 0;
-		$<p.tipo>$="funcion";
-	}
-	l CERPAR
+	| {writeParser(23);} ABRPAR l CERPAR {$<p.tipo>$="funcion";}
 	| {writeParser(24);} OPASSUMA e{
-		$<p.assign>$ = 1;
 		if (!strcmp($<p.tipo>3,"int")){
 			$<p.tipo>$ = $<p.tipo>3;
 		}
@@ -267,7 +263,6 @@ s2:
 		}
 	}
 	| {writeParser(25);} OPINCR {
-		$<p.assign>$ = 1;
 		int tableID = existe_entrada_tablas_anteriores(TSStack,currentID);
 		if (!strcmp(consultar_valor_atributo_cadena(tableID, currentID, "tipo"),"int")){
 			$<p.tipo>$ = "int";
@@ -312,7 +307,7 @@ g1:
 
 g2:
 	/* empty */ {writeParser(31);}
-	| {writeParser(30);} b {$<p>$ = $<p>2;}
+	| {writeParser(30);} b g2 {$<p>$ = $<p>2;}
 	;		
 
 j:
