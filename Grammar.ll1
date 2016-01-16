@@ -48,7 +48,7 @@ G -> default doblePuntos G2	//// token "default" seguido de simbolo ":" y G2 que
 G1 -> B J I //// cuerpo dentro un case, possibilidad de otros case seguidos
 G1 -> I	//// cuerpo vacio de case, possibilidad de otros case seguidos
 
-G2 -> B 	//// cuerpo dentro un default
+G2 -> B G2	//// cuerpo dentro un default
 G2 -> lambda	//// cuerpo vacio dentro un default
 
 J -> break //// break en el fin del cuerpo de case
