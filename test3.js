@@ -2,10 +2,15 @@
 
 /* SENTENCIA CONDITIONAL SIMPLE "IF" */
 
-
-
-
-
+/** sentencias if anidadas **/
+var int var1 
+var int var2
+var1 = 1
+if  (var1==1){
+	prompt(var2)
+	if (var2==1)
+		write("test sentencias if anidadas")
+}
 
 /* SENTENCIA SELECCION MULTIPLE "SWITCH-CASE" */
 
