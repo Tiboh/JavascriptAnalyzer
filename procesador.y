@@ -19,9 +19,6 @@
 
 struct{
 	char* lexema;
-	int valueInt;
-	char* valueChar;
-	char* valueBool;
 	char* tipo;
 	char* tipovuelta;
 	}p;
