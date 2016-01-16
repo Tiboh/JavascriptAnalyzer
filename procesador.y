@@ -370,7 +370,7 @@ e1:
 			$<p.tipo>$ = "bool";
 		}else{
 			$<p.tipo>$ = "error";
-			fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Solo acepta tipo booleano %s\n",RED_TERM, yylineno, BLACK_TERM);
+			fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Operador '&&' Solo acepta tipo booleano %s\n",RED_TERM, yylineno, BLACK_TERM);
 		}
 	}
 	;
@@ -399,11 +399,11 @@ r1:
 				$<p.tipo>$ = "bool";
 			}else{
 				$<p.tipo>$ = "error";
-				fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Operator '==' solo acepta tipo entero o booleano %s\n",RED_TERM, yylineno, BLACK_TERM);
+				fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Operador '==' solo acepta tipo entero o booleano %s\n",RED_TERM, yylineno, BLACK_TERM);
 			}
 		}else{
 			$<p.tipo>$ = "error";
-			fprintf(errorFile," %sERROR SINTACTICO (Line:%d): No mismo tipos %s\n",RED_TERM, yylineno, BLACK_TERM);
+			fprintf(errorFile," %sERROR SINTACTICO (Line:%d): No se puede comparar variables de tipos distintos %s\n",RED_TERM, yylineno, BLACK_TERM);
 		}
 	}
 	;
@@ -431,7 +431,7 @@ u1:
 			$<p.tipo>$ = "int";
 		}else{
 			$<p.tipo>$ = "error";
-			fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Operator '+' solo acepta tipo entero %s\n",RED_TERM, yylineno, BLACK_TERM);
+			fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Operador '+' solo acepta tipo entero %s\n",RED_TERM, yylineno, BLACK_TERM);
 		}
 	}
 	;

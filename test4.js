@@ -19,12 +19,20 @@
 	b3 = b1 && b2
 
 /* Relational '==' */
-	if(sum1==3)
-		write("int Succeed")
+	/* Comparacion enteros */
+		if(sum1==3)
+			write("int Succeed")
+	
+	/* Comparacion booleanos */
+		if(b1==true)
+			write("bool Succeed")
 
-	if(b1==true)
-		write("bool Succeed")
-
+	/* Comparacion de mas de dos variables de mismo tipo */
+		var bool comp1
+		var bool comp2
+		if(comp1==comp2==true)	
+			write("Multiple variables Succeed")
+		
 /* Post Auto Incrementacion '++' as sufijo */
 	a++ 
 	a = sum1++
