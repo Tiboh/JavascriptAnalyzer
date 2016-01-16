@@ -209,29 +209,32 @@ s:
 		}
 		nbParam = 0;
 	}
-	s2 {	
+	s2 {
 		int numTable = existe_entrada_tablas_anteriores(TSStack,$<p.lexema>2);
-		if(!strcmp($<p.tipo>4, "int") || !strcmp($<p.tipo>4, "bool") || !strcmp($<p.tipo>4, "chars")){ // if it's an assignation
-		char* tipoID = (char*) consultar_valor_atributo_cadena(numTable,$<p.lexema>2,"tipo");
-			if(!strcmp($<p.tipo>4,tipoID)){
-			}else{
-				fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Variable '%s' solo acepta tipo '%s' %s\n",RED_TERM, yylineno, $<p.lexema>2, tipoID, BLACK_TERM);
-			}
-		} else if(!strcmp($<p.tipo>4, "funcion")){ // it's function
-			int parametros = consultar_valor_atributo_entero(numTable,$<p.lexema>2,"parametros");
-			if(parametros != nbParam){
-				fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Se falta %d parametros en el llamamiento de la funcion %s %s\n",RED_TERM, yylineno, parametros-nbParam, $<p.lexema>2, BLACK_TERM);
-			}
-			int i;
-			for(i = 0 ; i < nbParam ; i++){
-				char * attr = concatStringInt("tipoparam", i+1);
-				char * tipoParam = (char*) consultar_valor_atributo_cadena(numTable,$<p.lexema>2,attr);
-				if(strcmp(tipoParam, params[i])){
-					fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Parametro %d en el llamamiento de la funcion %s debe ser de tipo %s %s\n",RED_TERM, yylineno, i+1, $<p.lexema>2, tipoParam, BLACK_TERM);
+		if(numTable != -1){
+			if(!strcmp($<p.tipo>4, "int") || !strcmp($<p.tipo>4, "bool") || !strcmp($<p.tipo>4, "chars")){ // if it's an assignation
+			char* tipoID = (char*) consultar_valor_atributo_cadena(numTable,$<p.lexema>2,"tipo");
+				if(!strcmp($<p.tipo>4,tipoID)){
+				}else{
+					fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Variable '%s' solo acepta tipo '%s' %s\n",RED_TERM, yylineno, $<p.lexema>2, tipoID, BLACK_TERM);
 				}
+			} else if(!strcmp($<p.tipo>4, "funcion")){ // it's function
+				int parametros = consultar_valor_atributo_entero(numTable,$<p.lexema>2,"parametros");
+				if(parametros != nbParam){
+					fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Se falta %d parametros en el llamamiento de la funcion %s %s\n",RED_TERM, yylineno, parametros-nbParam, $<p.lexema>2, BLACK_TERM);
+				}
+				int i;
+				for(i = 0 ; i < nbParam ; i++){
+					char * attr = concatStringInt("tipoparam", i+1);
+					char * tipoParam = (char*) consultar_valor_atributo_cadena(numTable,$<p.lexema>2,attr);
+					if(strcmp(tipoParam, params[i])){
+						fprintf(errorFile," %sERROR SINTACTICO (Line:%d): Parametro %d en el llamamiento de la funcion %s debe ser de tipo %s %s\n",RED_TERM, yylineno, i+1, $<p.lexema>2, tipoParam, BLACK_TERM);
+					}
+				}
+			}else{
+				
 			}
 		}else{
-			
 		}
 	}
 	;
