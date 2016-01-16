@@ -13,9 +13,9 @@ FILE *errorFile;
 
 int main(int argc,char *argv[])
 {
-	RED_TERM = ""; /* "\033[31m"; */
-	BLACK_TERM = ""; /* "\033[39m"; */
-	GREEN_TERM = ""; /* "\033[32m"; */
+	RED_TERM = "\033[31m"; /* "\033[31m"; */
+	BLACK_TERM = "\033[39m"; /* "\033[39m"; */
+	GREEN_TERM = "\033[32m"; /* "\033[32m"; */
 			
 	if(argc<6)
 	{
