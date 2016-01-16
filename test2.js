@@ -38,13 +38,14 @@ function int TestTiposDistintos (int a, bool b, chars c)
 	{
 		write(c)
 		return a
-	}	
+	}
+	return a
 }
 
 /* TEST DE TIPO DE VUELTA DE FUNCION */
 
 /** sin return**/
-function int TestWithoutReturn(int a, int b) 
+function TestWithoutReturn(int a, int b) 
 {	
 	var int c
 	c = a + b
@@ -61,13 +62,6 @@ function int Suma2 (int a, int b)
 {
 	return a + b
 }
-
-/** return vacio **/
-function int TestReturnVariableNothing (int a) 
-{
-	return 
-}
-
 
 /* TEST LLAMADA DE FUNCION */
 
@@ -95,7 +89,6 @@ function int TestRecursif (int a)
 	if (a==5) {
 			return a
 			}
-	
+	TestRecursif(a+1)		
+	return a
 }
-
-
