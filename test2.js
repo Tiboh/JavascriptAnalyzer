@@ -38,7 +38,7 @@ function int TestTiposDistintos (int a, bool b, chars c)
 	{
 		write(c)
 		return a
-	}	
+	}
 	return a
 }
 
@@ -80,6 +80,7 @@ function Main()
 	Imprime(variable4)
 }
 
+
 /* RECURSIVIDAD */
 
 function int TestRecursif (int a)
@@ -88,9 +89,6 @@ function int TestRecursif (int a)
 	if (a==5) {
 			return a
 			}
-	TestRecursif(a)
+	TestRecursif(a+1)		
+	return a
 }
-
-
-
-
