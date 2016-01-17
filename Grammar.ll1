@@ -34,7 +34,7 @@ K -> lambda //// solo un parametro de funcion
 
 S -> id S2 		//// identificador seguida de operaciones
 S -> return E	//// token "return" seguido de una expresión
-S -> write abrPar L cerPar	//// write para imprimir L que es una lista de parametros 
+S -> write abrPar E cerPar	//// write para imprimir L que es una lista de parametros 
 S -> prompt abrPar id cerPar	//// prompt para recuperar una valor en consola
 
 S2 -> opAs E	//// operador de asignacion "=" seguido de expresión

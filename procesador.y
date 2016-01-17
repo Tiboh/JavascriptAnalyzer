@@ -338,7 +338,7 @@ h:
 
 l:
 	/* empty */ {writeParser(41);}
-	|{writeParser(41);} e {nbParam = 1; params[nbParam-1] = $<p.tipo>2;} q {$<p>$ = $<p>2;}
+	|{writeParser(40);} e {nbParam = 1; params[nbParam-1] = $<p.tipo>2;} q {$<p>$ = $<p>2;}
 	;
 	
 q:

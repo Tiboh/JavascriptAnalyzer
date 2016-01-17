@@ -37,11 +37,11 @@ LOGICO ("true"|"false")
 
 "," {ECHO;writeToken("COMA", "", "Comma");yylval.p.lexema = strdup(yytext);return(COMA);}
 
-{ENTERO} {ECHO;writeToken("ENTERO", yytext, "Entero");yylval.p.valueInt = atoi(yytext);return(ENTERO);}
+{ENTERO} {ECHO;writeToken("ENTERO", yytext, "Entero");return(ENTERO);}
 
-{LOGICO} {ECHO;writeToken("LOGICO", yytext, "Logico");yylval.p.valueBool = strdup(yytext);return(LOGICO);}
+{LOGICO} {ECHO;writeToken("LOGICO", yytext, "Logico");return(LOGICO);}
 
-{CADENA} {ECHO;writeToken("CADENA", yytext, "Cadena");yylval.p.valueChar = strdup(yytext);return(CADENA);}
+{CADENA} {ECHO;writeToken("CADENA", yytext, "Cadena");return(CADENA);}
 
 int {ECHO;writeToken("INT", yytext, "Palabra reservada");yylval.p.lexema = strdup(yytext);return(INT);}
 
